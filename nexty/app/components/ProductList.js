@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function ProductList({ product }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const searchParams = useSearchParams(); // Get current query params
+  const searchParams = useSearchParams();
 
   const handlePrevImage = (e) => {
     e.preventDefault();
@@ -23,7 +23,7 @@ export default function ProductList({ product }) {
 
   return (
     <Link
-      href={`/product/${product.id}?${searchParams.toString()}`} // Include current searchParams in the link
+      href={`/product/${product.id}?${searchParams.toString()}`}
       className="block p-4 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow"
     >
       <div className="relative">
@@ -37,9 +37,8 @@ export default function ProductList({ product }) {
           width={320}
           height={320}
           className="object-contain w-full h-48 mb-4"
-          onError={(e) => {
-            e.currentTarget.src = "/path/to/placeholder-image.jpg";
-          }}
+          quality={75} // Serve optimized image
+          priority // For preloading important images
         />
 
         {product.images && product.images.length > 1 && (
