@@ -1,28 +1,36 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function SearchBar({ initialSearchTerm }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const searchInput = e.target.elements.search.value;
+  // Update the URL as the user types
+  useEffect(() => {
     const params = new URLSearchParams(searchParams);
-    if (searchInput) params.set("search", searchInput);
-    else params.delete("search");
+    if (searchTerm) {
+      params.set("search", searchTerm);
+    } else {
+      params.delete("search");
+    }
     params.set("page", "1"); // reset to page 1 when searching
     router.push(`/?${params.toString()}`);
-  };
+  }, [searchTerm, searchParams, router]);
 
   return (
-    <form className="mb-6 flex w-full max-w-lg mx-auto" onSubmit={handleSubmit}>
+    <form
+      className="mb-6 flex w-full max-w-lg mx-auto"
+      onSubmit={(e) => e.preventDefault()}
+    >
       <div className="relative flex-grow justify-left">
         <input
           type="text"
           name="search"
-          defaultValue={initialSearchTerm}
+          value={searchTerm} // Controlled component
+          onChange={(e) => setSearchTerm(e.target.value)} // Update state on input change
           placeholder="Search products..."
           className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 placeholder-gray-400"
         />

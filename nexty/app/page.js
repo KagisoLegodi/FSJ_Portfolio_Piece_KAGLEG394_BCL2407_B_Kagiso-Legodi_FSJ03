@@ -46,12 +46,17 @@ export default function Home() {
   useEffect(() => {
     const loadProducts = async () => {
       setLoading(true);
-      const fetchedProducts = await fetchProducts(page, search, sort, category);
+      const fetchedProducts = await fetchProducts(
+        page,
+        search,
+        sort,
+        category,
+      );
       setProducts(fetchedProducts);
       setLoading(false);
     };
     loadProducts();
-  }, [page, search, sort, category]);
+  }, [page, search, sort, category,]); 
 
   const handlePagination = (newPage) => {
     if (!loading) {
