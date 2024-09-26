@@ -64,26 +64,35 @@ export default function Home() {
   };
 
   return (
-    <section className="container mx-auto px-4 py-8 ">
-      <h1 className="text-4xl font-extrabold my-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+    <section className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl md:text-4xl font-extrabold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
         Discover Amazing Products
       </h1>
 
-      <div className="max-w-4xl mx-auto space-y-6">
-        <SearchBar initialSearchTerm={search} />
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-          <SortOptions selectedSort={sort} />
-          <CategoryFilter categories={categories} selectedCategory={category} />
+      <div className="mb-6">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
+          <div className="w-full md:w-1/3">
+            <SearchBar initialSearchTerm={search} />
+          </div>
+          <div className="w-full md:w-1/3">
+            <CategoryFilter
+              categories={categories}
+              selectedCategory={category}
+            />
+          </div>
+          <div className="w-full md:w-1/3">
+            <SortOptions selectedSort={sort} />
+          </div>
         </div>
+      </div>
 
-        <div className="flex justify-center">
-          <button
-            onClick={handleReset}
-            className="px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out"
-          >
-            Reset All Filters
-          </button>
-        </div>
+      <div className="flex justify-center mb-6">
+        <button
+          onClick={handleReset}
+          className="px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out"
+        >
+          Reset All Filters
+        </button>
       </div>
 
       {loading ? (
@@ -91,30 +100,30 @@ export default function Home() {
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500"></div>
         </div>
       ) : products.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((product) => (
             <ProductList key={product.id} product={product} />
           ))}
         </div>
       ) : (
-        <p className="text-center text-xl text-gray-600 mt-12">
+        <p className="text-center text-xl text-gray-600 mt-8">
           No products available.
         </p>
       )}
 
-      <div className="flex justify-between items-center mt-12">
+      <div className="flex justify-between items-center mt-8">
         <button
           onClick={() => handlePagination(Math.max(1, page - 1))}
           disabled={page === 1 || loading}
-          className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading && page > 1 ? "Loading..." : "Previous"}
         </button>
-        <span className="font-semibold text-lg text-gray-700">Page {page}</span>
+        <span className="font-semibold text-gray-700">Page {page}</span>
         <button
           onClick={() => handlePagination(page + 1)}
           disabled={products.length < 20 || loading}
-          className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading && products.length === 20 ? "Loading..." : "Next"}
         </button>
