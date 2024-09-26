@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import { FaHeart, FaShoppingCart, FaUser } from "react-icons/fa";
+// import { FaHeart, FaShoppingCart, FaUser } from "react-icons/fa";
 
 export default function Header() {
   return (
@@ -38,29 +38,29 @@ export default function Header() {
           </Link>
           <div className="flex space-x-6 text-white">
             {/* Wishlist Link */}
-            <Link
+            {/* <Link
               href="/wishlist"
               className="flex items-center space-x-1 hover:text-blue-200 transition duration-300"
             >
               <FaHeart className="text-lg" />
               <span>Wishlist</span>
-            </Link>
+            </Link> */}
             {/* Cart Link */}
-            <Link
+            {/* <Link
               href="/cart"
               className="flex items-center space-x-1 hover:text-blue-200 transition duration-300"
             >
               <FaShoppingCart className="text-lg" />
               <span>Cart</span>
-            </Link>
+            </Link> */}
             {/* Login Link */}
-            <Link
+            {/* <Link
               href="/login"
               className="flex items-center space-x-1 hover:text-blue-200 transition duration-300"
             >
               <FaUser className="text-lg" />
               <span>Login</span>
-            </Link>
+            </Link> */}
           </div>
         </nav>
       </header>

@@ -18,7 +18,7 @@ export default function SearchBar({ initialSearchTerm }) {
 
   return (
     <form className="mb-6 flex w-full max-w-lg mx-auto" onSubmit={handleSubmit}>
-      <div className="relative flex-grow">
+      <div className="relative flex-grow justify-left">
         <input
           type="text"
           name="search"

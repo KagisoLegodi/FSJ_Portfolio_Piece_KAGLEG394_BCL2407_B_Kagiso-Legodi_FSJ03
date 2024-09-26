@@ -8,8 +8,6 @@ import SortOptions from "./components/SortOptions";
 import CategoryFilter from "./components/CategoryFilter";
 import { fetchProducts } from "./lib/fetchProducts";
 
-const categories = ["Electronics", "Clothing", "Books", "Accessories"]; // Example categories
-
 export default function Home() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -20,14 +18,35 @@ export default function Home() {
   const page = parseInt(searchParams.get("page") || "1", 10);
 
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false); // Added loading state
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(
+          "https://next-ecommerce-api.vercel.app/categories"
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+        const data = await response.json();
+        console.log("Fetched categories:", data);
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     const loadProducts = async () => {
-      setLoading(true); // Set loading to true when fetching products
+      setLoading(true);
       const fetchedProducts = await fetchProducts(page, search, sort, category);
       setProducts(fetchedProducts);
-      setLoading(false); // Set loading to false when fetching is done
+      setLoading(false);
     };
     loadProducts();
   }, [page, search, sort, category]);
@@ -63,20 +82,18 @@ export default function Home() {
       <div className="flex justify-between mt-6">
         <button
           onClick={() => handlePagination(Math.max(1, page - 1))}
-          disabled={page === 1 || loading} // Disable when loading
+          disabled={page === 1 || loading}
           className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 hover:bg-blue-700 transition-colors"
         >
-          {loading && page > 1 ? "Loading..." : "Previous"}{" "}
-          {/* Loading state for Previous */}
+          {loading && page > 1 ? "Loading..." : "Previous"}
         </button>
         <span className="font-semibold">Page {page}</span>
         <button
           onClick={() => handlePagination(page + 1)}
-          disabled={products.length < 20 || loading} // Disable when loading
+          disabled={products.length < 20 || loading}
           className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 hover:bg-blue-700 transition-colors"
         >
-          {loading && products.length === 20 ? "Loading..." : "Next"}{" "}
-          {/* Loading state for Next */}
+          {loading && products.length === 20 ? "Loading..." : "Next"}
         </button>
       </div>
     </section>

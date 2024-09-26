@@ -1,43 +1,27 @@
-export async function fetchProducts(
-  page = 1,
-  searchTerm = "",
-  sort = "",
-  category = "",
-) {
-  const itemsPerPage = 20;
-  const skip = (page - 1) * itemsPerPage;
+// lib/fetchProducts.js
 
-  const searchQuery = searchTerm
-    ? `&search=${encodeURIComponent(searchTerm)}`
-    : "";
-  const sortQuery = sort
-    ? `&sortBy=${sort.split("-")[0]}&order=${sort.split("-")[1] || "asc"}`
-    : "";
-  const categoryQuery = category
-    ? `&category=${encodeURIComponent(category)}`
-    : "";
+export async function fetchProducts(page, search, sort, category) {
+  const limit = 20;
+  const skip = (page - 1) * limit;
 
-  const apiUrl = `https://next-ecommerce-api.vercel.app/products?limit=${itemsPerPage}&skip=${skip}${searchQuery}${sortQuery}${categoryQuery}`;
+  let url = `https://next-ecommerce-api.vercel.app/products?limit=${limit}&skip=${skip}`;
 
-  console.log("Attempting to fetch from URL:", apiUrl);
+  if (search) url += `&search=${encodeURIComponent(search)}`;
+  if (category) url += `&category=${encodeURIComponent(category)}`;
+
+  if (sort) {
+    const [sortBy, order] = sort.split("-");
+    url += `&sortBy=${sortBy}&order=${order}`;
+  }
 
   try {
-    const res = await fetch(apiUrl, { mode: "cors" }); // Add mode: 'cors' for cross-origin requests
-
-    if (!res.ok) {
-      console.error(
-        `Failed to fetch products: ${res.status} - ${res.statusText}`
-      );
-      const errorDetails = await res.text();
-      console.error("Error details:", errorDetails);
-      throw new Error("Failed to load products");
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Failed to fetch products");
     }
-
-    return await res.json();
+    return await response.json();
   } catch (error) {
-    console.error("Error during fetch operation:", error);
-    throw new Error(
-      "Fetch failed. Possible reasons: Network error, CORS issue, or incorrect API URL."
-    );
+    console.error("Error fetching products:", error);
+    return [];
   }
 }

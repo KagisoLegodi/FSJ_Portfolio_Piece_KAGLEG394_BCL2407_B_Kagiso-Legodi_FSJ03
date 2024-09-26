@@ -76,7 +76,7 @@ const ProductDetailPage = ({ params }) => {
       <Link href="/" className="text-blue-600 hover:text-blue-800 underline">
         &larr; Back
       </Link>
-
+  
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         {/* Main Image */}
@@ -96,7 +96,7 @@ const ProductDetailPage = ({ params }) => {
             {product.title}
           </h1>
         </div>
-
+  
         {/* Image Gallery */}
         {product.images && product.images.length > 0 && (
           <div className="mt-6 flex space-x-4 overflow-x-auto">
@@ -120,7 +120,7 @@ const ProductDetailPage = ({ params }) => {
             ))}
           </div>
         )}
-
+  
         {/* Product Details */}
         <div className="space-y-6">
           {/* Price and Category */}
@@ -132,10 +132,20 @@ const ProductDetailPage = ({ params }) => {
               {product.category}
             </span>
           </div>
-
+  
           {/* Description */}
           <p className="text-lg leading-relaxed">{product.description}</p>
-
+  
+          {/* Additional Product Details */}
+          <div className="space-y-6">
+            {/* Warranty Information */}
+            <div>
+              <span className="font-semibold">Warranty Information: </span>
+              {product.warrantyInformation}
+            </div>
+            {/* Add more details here as needed */}
+          </div>
+  
           {/* Discount and Stock */}
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -159,7 +169,7 @@ const ProductDetailPage = ({ params }) => {
           </div>
         </div>
       </div>
-
+  
       {/* Reviews Section */}
       <div className="space-y-4 mt-8">
         <h2 className="text-xl font-bold">Customer Reviews</h2>
@@ -190,6 +200,6 @@ const ProductDetailPage = ({ params }) => {
       </div>
     </div>
   );
-};
+}
 
 export default ProductDetailPage;
