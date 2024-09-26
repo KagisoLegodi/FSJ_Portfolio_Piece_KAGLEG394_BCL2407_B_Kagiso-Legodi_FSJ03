@@ -1,11 +1,23 @@
 import Head from "next/head";
 import Link from "next/link";
-// import { FaHeart, FaShoppingCart, FaUser } from "react-icons/fa";
 
-export default function Header() {
+export default function Header({
+  title = "NEXTY E-Commerce",
+  description = "Discover Amazing Products",
+}) {
   return (
     <>
       <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://yourwebsite.com" />
+        <meta property="og:image" content="/path-to-image.jpg" />
+        <meta name="msapplication-TileColor" content="#00aba9" />
+        <meta name="theme-color" content="#ffffff" />
+
         <link
           rel="apple-touch-icon"
           sizes="180x180"
@@ -25,8 +37,6 @@ export default function Header() {
         />
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
-        <meta name="msapplication-TileColor" content="#00aba9" />
-        <meta name="theme-color" content="#ffffff" />
       </Head>
       <header className="bg-gray-600 p-4 shadow-lg">
         <nav className="container mx-auto flex justify-between items-center">
