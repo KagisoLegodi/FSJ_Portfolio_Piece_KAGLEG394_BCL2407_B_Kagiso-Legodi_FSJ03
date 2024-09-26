@@ -24,6 +24,8 @@ const ProductDetailPage = ({ params }) => {
   const [mainImage, setMainImage] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sortOption, setSortOption] = useState("dateDesc");
+  const [sortedReviews, setSortedReviews] = useState([]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -31,6 +33,7 @@ const ProductDetailPage = ({ params }) => {
         const productData = await getProduct(productId);
         setProduct(productData);
         setMainImage(productData.thumbnail);
+        setSortedReviews(productData.reviews || []);
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch product data.");
@@ -41,6 +44,29 @@ const ProductDetailPage = ({ params }) => {
     fetchProduct();
     window.scrollTo(0, 0);
   }, [productId]);
+
+  useEffect(() => {
+    if (product && product.reviews) {
+      const reviews = [...product.reviews];
+      switch (sortOption) {
+        case "ratingDesc":
+          reviews.sort((a, b) => b.rating - a.rating);
+          break;
+        case "ratingAsc":
+          reviews.sort((a, b) => a.rating - b.rating);
+          break;
+        case "dateDesc":
+          reviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+          break;
+        case "dateAsc":
+          reviews.sort((a, b) => new Date(a.date) - new Date(b.date));
+          break;
+        default:
+          break;
+      }
+      setSortedReviews(reviews);
+    }
+  }, [sortOption, product]);
 
   if (loading) {
     return (
@@ -74,7 +100,7 @@ const ProductDetailPage = ({ params }) => {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-8 dark:text-gray-200">
       {/* Back to Products */}
       <button
-        onClick={() => router.back()} // Use router.back() to return to the filtered list
+        onClick={() => router.back()}
         className="text-blue-600 hover:text-blue-800 underline"
       >
         &larr; Back to results
@@ -169,11 +195,29 @@ const ProductDetailPage = ({ params }) => {
 
       {/* Reviews Section */}
       <div className="space-y-4 mt-8">
-        <h2 className="text-xl font-bold">Customer Reviews</h2>
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-bold">Customer Reviews</h2>
+          <div className="flex items-center space-x-2">
+            <label htmlFor="sort-reviews" className="text-sm font-medium">
+              Sort by:
+            </label>
+            <select
+              id="sort-reviews"
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              className="border rounded-md px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600"
+            >
+              <option value="dateDesc">Newest First</option>
+              <option value="dateAsc">Oldest First</option>
+              <option value="ratingDesc">Highest Rating</option>
+              <option value="ratingAsc">Lowest Rating</option>
+            </select>
+          </div>
+        </div>
         <p className="text-lg text-yellow-500">Rating: {product.rating}/5</p>
-        {product.reviews && product.reviews.length > 0 ? (
+        {sortedReviews.length > 0 ? (
           <ul className="space-y-6">
-            {product.reviews.map((review, index) => (
+            {sortedReviews.map((review, index) => (
               <li
                 key={index}
                 className="border-b border-gray-200 pb-6 dark:border-gray-700"
