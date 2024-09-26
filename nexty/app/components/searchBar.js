@@ -35,12 +35,12 @@ export default function SearchBar({ initialSearchTerm }) {
           className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 placeholder-gray-400"
         />
       </div>
-      <button
+      {/* <button
         type="submit"
         className="ml-3 px-6 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300 ease-in-out"
       >
         Search
-      </button>
+      </button> */}
     </form>
   );
 }
