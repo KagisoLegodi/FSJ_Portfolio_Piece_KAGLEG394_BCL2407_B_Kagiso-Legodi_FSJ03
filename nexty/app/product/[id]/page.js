@@ -1,8 +1,7 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
 
 async function getProduct(productId) {
   const res = await fetch(
@@ -19,27 +18,28 @@ async function getProduct(productId) {
 
 const ProductDetailPage = ({ params }) => {
   const { id: productId } = params;
+  const router = useRouter();
 
   const [product, setProduct] = useState(null);
   const [mainImage, setMainImage] = useState("");
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true); // State for loading
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const productData = await getProduct(productId);
         setProduct(productData);
-        setMainImage(productData.thumbnail); // Set the initial main image
-        setLoading(false); // Set loading to false after data is fetched
+        setMainImage(productData.thumbnail);
+        setLoading(false);
       } catch (err) {
         setError("Failed to fetch product data.");
-        setLoading(false); // Set loading to false even if there is an error
+        setLoading(false);
       }
     };
 
     fetchProduct();
-    window.scrollTo(0, 0); // Scroll to top when product is fetched
+    window.scrollTo(0, 0);
   }, [productId]);
 
   if (loading) {
@@ -73,10 +73,13 @@ const ProductDetailPage = ({ params }) => {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-8 dark:text-gray-200">
       {/* Back to Products */}
-      <Link href="/" className="text-blue-600 hover:text-blue-800 underline">
-        &larr; Back
-      </Link>
-  
+      <button
+        onClick={() => router.back()} // Use router.back() to return to the filtered list
+        className="text-blue-600 hover:text-blue-800 underline"
+      >
+        &larr; Back to results
+      </button>
+
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         {/* Main Image */}
@@ -96,7 +99,7 @@ const ProductDetailPage = ({ params }) => {
             {product.title}
           </h1>
         </div>
-  
+
         {/* Image Gallery */}
         {product.images && product.images.length > 0 && (
           <div className="mt-6 flex space-x-4 overflow-x-auto">
@@ -113,14 +116,14 @@ const ProductDetailPage = ({ params }) => {
                   height={96}
                   className="object-contain hover:opacity-75 transition-opacity duration-300 bg-gray-300"
                   onError={(e) => {
-                    e.currentTarget.src = "/path/to/placeholder-image.jpg"; // Fallback image
+                    e.currentTarget.src = "/path/to/placeholder-image.jpg";
                   }}
                 />
               </div>
             ))}
           </div>
         )}
-  
+
         {/* Product Details */}
         <div className="space-y-6">
           {/* Price and Category */}
@@ -132,22 +135,16 @@ const ProductDetailPage = ({ params }) => {
               {product.category}
             </span>
           </div>
-  
+
           {/* Description */}
           <p className="text-lg leading-relaxed">{product.description}</p>
-  
+
           {/* Additional Product Details */}
           <div className="space-y-6">
-            {/* Warranty Information */}
             <div>
               <span className="font-semibold">Warranty Information: </span>
               {product.warrantyInformation}
             </div>
-            {/* Add more details here as needed */}
-          </div>
-  
-          {/* Discount and Stock */}
-          <div className="grid grid-cols-2 gap-4">
             <div>
               <span className="font-semibold">Discount: </span>
               <span className="text-red-500">
@@ -169,7 +166,7 @@ const ProductDetailPage = ({ params }) => {
           </div>
         </div>
       </div>
-  
+
       {/* Reviews Section */}
       <div className="space-y-4 mt-8">
         <h2 className="text-xl font-bold">Customer Reviews</h2>
@@ -200,6 +197,6 @@ const ProductDetailPage = ({ params }) => {
       </div>
     </div>
   );
-}
+};
 
 export default ProductDetailPage;

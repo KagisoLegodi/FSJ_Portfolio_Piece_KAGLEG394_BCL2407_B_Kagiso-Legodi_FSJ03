@@ -1,19 +1,21 @@
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function ProductList({ product }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const searchParams = useSearchParams(); // Get current query params
 
   const handlePrevImage = (e) => {
-    e.preventDefault(); // Prevent link navigation
+    e.preventDefault();
     setCurrentImageIndex((prevIndex) =>
       prevIndex === 0 ? product.images.length - 1 : prevIndex - 1
     );
   };
 
   const handleNextImage = (e) => {
-    e.preventDefault(); // Prevent link navigation
+    e.preventDefault();
     setCurrentImageIndex((prevIndex) =>
       prevIndex === product.images.length - 1 ? 0 : prevIndex + 1
     );
@@ -21,7 +23,7 @@ export default function ProductList({ product }) {
 
   return (
     <Link
-      href={`/product/${product.id}`}
+      href={`/product/${product.id}?${searchParams.toString()}`} // Include current searchParams in the link
       className="block p-4 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow"
     >
       <div className="relative">
@@ -36,7 +38,7 @@ export default function ProductList({ product }) {
           height={320}
           className="object-contain w-full h-48 mb-4"
           onError={(e) => {
-            e.currentTarget.src = "/path/to/placeholder-image.jpg"; // Fallback image
+            e.currentTarget.src = "/path/to/placeholder-image.jpg";
           }}
         />
 
