@@ -32,7 +32,7 @@ export default function Header() {
         <nav className="container mx-auto flex justify-between items-center">
           <Link
             href="/"
-            className="text-2xl font-bold text-white hover:text-blue-200 transition duration-300"
+            className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600"
           >
             NEXTY E-Commerce
           </Link>
