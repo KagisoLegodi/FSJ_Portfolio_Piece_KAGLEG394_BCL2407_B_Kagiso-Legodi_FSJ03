@@ -26,7 +26,7 @@ export default function ProductList({ product }) {
       href={`/product/${product.id}?${searchParams.toString()}`}
       className="block p-4 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow"
     >
-      <div className="relative">
+      <div className="relative bg-slate-300">
         <Image
           src={
             product.images
