@@ -3,11 +3,21 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+/**
+ * SearchBar component for searching products.
+ *
+ * @param {Object} props - Component properties.
+ * @param {string} props.initialSearchTerm - The initial search term (if any).
+ * @returns {JSX.Element} - Rendered SearchBar component.
+ */
 export default function SearchBar({ initialSearchTerm }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
 
+  /**
+   * Handles search submission and updates query parameters.
+   */
   const handleSearch = () => {
     const params = new URLSearchParams(searchParams);
     if (searchTerm) {
