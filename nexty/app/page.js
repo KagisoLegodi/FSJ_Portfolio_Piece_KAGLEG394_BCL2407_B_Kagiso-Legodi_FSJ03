@@ -7,7 +7,7 @@ import SearchBar from "./components/searchBar";
 import SortOptions from "./components/SortOptions";
 import CategoryFilter from "./components/CategoryFilter";
 import { fetchProducts } from "./lib/fetchProducts";
-import { fetchCategories } from "./lib/fecthCategories";
+import { fetchCategories } from "./lib/fecthCategories"; 
 import Header from "./components/Header";
 
 export default function Home() {
@@ -24,24 +24,12 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch(
-          "https://next-ecommerce-api.vercel.app/categories",
-          { cache: "force-cache" } // Cache categories aggressively
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch categories");
-        }
-        const data = await response.json();
-        console.log("Fetched categories:", data);
-        setCategories(data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
+    const loadCategories = async () => {
+      const categoriesData = await fetchCategories(); // Use the new function
+      setCategories(categoriesData);
     };
 
-    fetchCategories();
+    loadCategories();
   }, []);
 
   useEffect(() => {
