@@ -14,16 +14,15 @@
 
 ## Introduction
 
-NEXTY is a modern, responsive e-commerce web application built with Next.js. It provides a seamless shopping experience with features like product browsing, detailed product views, and a user-friendly interface.
+NEXTY is a modern, responsive e-commerce web application built with Next.js. It provides a seamless shopping experience with features like product browsing, searching, sorting, and category filtering. The project showcases a clean, user-friendly interface designed to enhance the online shopping experience.
 
 ## Features
 
 - Responsive design for various device sizes
 - Product listing with pagination
-- Detailed product pages with image galleries
-- Shopping cart functionality
-- User authentication (Login)
-- Wishlist for saving favorite items
+- Search functionality for products
+- Sort options (price low to high, high to low)
+- Category filtering
 - Dark mode support
 
 ## Technologies Used
@@ -35,6 +34,7 @@ NEXTY is a modern, responsive e-commerce web application built with Next.js. It 
 - **Next/Image**: Next.js Image component for optimized image loading
 - **Next/Link**: Next.js Link component for client-side navigation
 - **useState and useEffect hooks**: For state management and side effects in functional components
+- **External API**: For fetching product and category data (https://next-ecommerce-api.vercel.app)
 
 ## Project Structure
 
@@ -42,11 +42,15 @@ The project is structured as follows:
 
 - `components/`: Reusable React components
   - `Header.js`: Navigation header component
-  - `ProductCard.js`: Individual product display component
-  - `ProductList.js`: Component for listing multiple products
+  - `ProductList.js`: Component for displaying individual products
+  - `SearchBar.js`: Search input component
+  - `SortOptions.js`: Sorting options component
+  - `CategoryFilter.js`: Category filter component
 - `pages/`:
-  - `index.js`: Home page with product listing
-  - `product/[id].js`: Dynamic route for individual product pages
+  - `index.js`: Home page with product listing, search, sort, and filter functionality
+- `lib/`:
+  - `fetchProducts.js`: Function to fetch products from the API
+  - `fetchCategories.js`: Function to fetch categories from the API
 - `layout.js`: Root layout component
 - `globals.css`: Global styles and Tailwind CSS imports
 
@@ -83,29 +87,32 @@ The project is structured as follows:
 - The home page (`/`) displays a grid of products.
 - Use the pagination controls at the bottom of the page to navigate through product listings.
 
-### Viewing Product Details
+### Searching Products
 
-- Click on a product card to view its detailed information.
-- On the product detail page, you can view multiple product images, description, price, and other relevant information.
+- Use the search bar at the top of the page to search for products by name or description.
 
-### Using the Shopping Cart
+### Sorting Products
 
-- Click the "Add to cart" button on a product card or product detail page to add items to your cart.
-- Access your cart by clicking the cart icon in the header.
+- Use the sort dropdown to sort products by price (low to high or high to low).
 
-### Managing Wishlist
+### Filtering by Category
 
-- Click the heart icon on a product card to add it to your wishlist.
-- Access your wishlist by clicking the "Wishlist" link in the header.
+- Use the category dropdown to filter products by specific categories.
 
-### User Authentication
+### Resetting Filters
 
-- Click the "Login" link in the header to access the login page.
-- (Note: Implement user authentication functionality as needed)
+- Click the "Reset All Filters" button to clear all search, sort, and category filters.
+
+[Consider adding screenshots or GIFs here to illustrate these features visually]
 
 ## API Integration
 
-The project uses a mock API for product data. Update the API endpoint in the `fetchProducts` function in `pages/index.js` and the `getProduct` function in `pages/product/[id].js` if you're integrating with a different backend.
+The project uses an external API for product and category data. The API endpoints are:
+
+- Products: `${process.env.NEXT_PUBLIC_API_URL}/api/products`
+- Categories: `${process.env.NEXT_PUBLIC_API_URL}/api/categories`
+
+Update these endpoints in the `fetchProducts` function in `lib/fetchProducts.js` and the `fetchCategories` function in `lib/fetchCategories.js` if you're integrating with a different backend.
 
 ## Styling
 
