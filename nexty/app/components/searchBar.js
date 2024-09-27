@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 /**
  * SearchBar component for searching products.
@@ -41,7 +41,7 @@ export default function SearchBar({ initialSearchTerm }) {
         <input
           type="text"
           name="search"
-          value={searchTerm} // Controlled component
+          value={searchTerm} 
           onChange={(e) => setSearchTerm(e.target.value)} // Update state on input change
           placeholder="Search products..."
           className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 placeholder-gray-400"
