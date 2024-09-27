@@ -3,10 +3,22 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+/**
+ * ProductList component that displays a list of products with image and information.
+ *
+ * @param {Object} props - Component properties.
+ * @param {Object} props.product - The product data to display.
+ * @returns {JSX.Element} - Rendered ProductList component.
+ */
 export default function ProductList({ product }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const searchParams = useSearchParams();
 
+  /**
+   * Handle showing the previous image in the gallery.
+   *
+   * @param {Event} e - The click event.
+   */
   const handlePrevImage = (e) => {
     e.preventDefault();
     setCurrentImageIndex((prevIndex) =>
@@ -14,6 +26,11 @@ export default function ProductList({ product }) {
     );
   };
 
+  /**
+   * Handle showing the next image in the gallery.
+   *
+   * @param {Event} e - The click event.
+   */
   const handleNextImage = (e) => {
     e.preventDefault();
     setCurrentImageIndex((prevIndex) =>
