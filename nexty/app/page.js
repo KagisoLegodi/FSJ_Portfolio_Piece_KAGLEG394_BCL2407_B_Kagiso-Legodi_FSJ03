@@ -35,17 +35,15 @@ export default function Home() {
   useEffect(() => {
     const loadProducts = async () => {
       setLoading(true);
-      const fetchedProducts = await fetchProducts(
-        page,
-        search,
-        sort,
-        category,
-      );
+      const fetchedProducts = await fetchProducts(page, search, sort, category);
+      console.log("Fetched Products:", fetchedProducts); // Debug log
       setProducts(fetchedProducts);
       setLoading(false);
     };
+
+    // Load products whenever the search, sort, category, or page changes
     loadProducts();
-  }, [page, search, sort, category,]); 
+  }, [page, search, sort, category]);
 
   const handlePagination = (newPage) => {
     if (!loading) {
