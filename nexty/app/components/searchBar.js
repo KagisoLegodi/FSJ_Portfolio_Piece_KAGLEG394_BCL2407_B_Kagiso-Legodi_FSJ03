@@ -8,22 +8,24 @@ export default function SearchBar({ initialSearchTerm }) {
   const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
 
-  // Update the URL as the user types
-  useEffect(() => {
+  const handleSearch = () => {
     const params = new URLSearchParams(searchParams);
     if (searchTerm) {
       params.set("search", searchTerm);
     } else {
       params.delete("search");
     }
-    params.set("page", "1"); // reset to page 1 when searching
+    params.set("page", "1"); // Reset page to 1 on search
     router.push(`/?${params.toString()}`);
-  }, [searchTerm, searchParams, router]);
+  };
 
   return (
     <form
       className="mb-6 flex w-full max-w-lg mx-auto"
-      onSubmit={(e) => e.preventDefault()}
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSearch();
+      }}
     >
       <div className="relative flex-grow justify-left">
         <input
@@ -35,12 +37,12 @@ export default function SearchBar({ initialSearchTerm }) {
           className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 placeholder-gray-400"
         />
       </div>
-      {/* <button
+      <button
         type="submit"
         className="ml-3 px-6 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300 ease-in-out"
       >
         Search
-      </button> */}
+      </button>
     </form>
   );
 }
