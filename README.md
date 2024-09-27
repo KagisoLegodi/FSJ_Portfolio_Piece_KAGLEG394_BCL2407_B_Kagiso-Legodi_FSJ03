@@ -108,7 +108,11 @@ The project is structured as follows:
 
 - Click the "Reset All Filters" button to clear all search, sort, and category filters.
 
-[Consider adding screenshots or GIFs here to illustrate these features visually]
+[ ![example 4](https://github.com/user-attachments/assets/1e79a072-3148-4ab3-9f6b-2eb3372be63d)
+![example 3](https://github.com/user-attachments/assets/b0775de5-ad94-4d89-8234-93475631539c)
+![example 2](https://github.com/user-attachments/assets/3503d57e-9456-4f51-98a7-326c7c9f96e3)
+![example](https://github.com/user-attachments/assets/b304e0de-01a3-4107-9abb-5b8e5c3a51f1)
+ ]
 
 ## API Integration
 
