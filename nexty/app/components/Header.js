@@ -9,10 +9,7 @@ import Link from "next/link";
  * @param {string} [props.description="Discover Amazing Products"] - The description meta tag for SEO.
  * @returns {JSX.Element} - The rendered Header component.
  */
-export default function Header({
-  title = "NEXTY E-Commerce",
-  description = "Discover Amazing Products",
-}) {
+export default function Header({ title = "NEXTY E-Commerce", description = "Discover Amazing Products" }) {
   return (
     <>
       <Head>
@@ -26,23 +23,9 @@ export default function Header({
         <meta name="msapplication-TileColor" content="#00aba9" />
         <meta name="theme-color" content="#ffffff" />
 
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/apple-touch-icon.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="32x32"
-          href="/favicon-32x32.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href="/favicon-16x16.png"
-        />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
       </Head>
@@ -54,9 +37,6 @@ export default function Header({
           >
             NEXTY E-Commerce
           </Link>
-          <div className="flex space-x-6 text-white">
-            {/* Future links for Wishlist, Cart, and Login can be uncommented */}
-          </div>
         </nav>
       </header>
     </>
