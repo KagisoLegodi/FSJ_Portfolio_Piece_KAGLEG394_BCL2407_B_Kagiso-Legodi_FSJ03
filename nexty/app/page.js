@@ -7,6 +7,7 @@ import SearchBar from "./components/searchBar";
 import SortOptions from "./components/SortOptions";
 import CategoryFilter from "./components/CategoryFilter";
 import { fetchProducts } from "./lib/fetchProducts";
+import { fetchCategories } from "./lib/fecthCategories";
 import Header from "./components/Header";
 
 export default function Home() {
