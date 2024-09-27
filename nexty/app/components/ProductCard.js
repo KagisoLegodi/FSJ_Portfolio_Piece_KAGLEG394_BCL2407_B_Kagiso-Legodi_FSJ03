@@ -4,15 +4,28 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+/**
+ * ProductCard component displays individual product details with image gallery.
+ *
+ * @param {Object} props - Component properties.
+ * @param {Object} props.product - Product data to display.
+ * @returns {JSX.Element} - Rendered ProductCard component.
+ */
 export default function ProductCard({ product }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  /**
+   * Switch to the next image in the gallery.
+   */
   const nextImage = () => {
     setCurrentImageIndex(
       (prevIndex) => (prevIndex + 1) % product.images.length
     );
   };
 
+  /**
+   * Switch to the previous image in the gallery.
+   */
   const prevImage = () => {
     setCurrentImageIndex(
       (prevIndex) =>
