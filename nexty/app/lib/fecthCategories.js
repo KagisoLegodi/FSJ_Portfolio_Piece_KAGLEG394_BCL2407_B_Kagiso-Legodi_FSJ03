@@ -1,3 +1,11 @@
+/**
+ * Fetches product categories from the API with caching enabled.
+ *
+ * @async
+ * @function fetchCategories
+ * @returns {Promise<Array>} - A promise that resolves to an array of categories.
+ * @throws {Error} - Throws an error if the request fails.
+ */
 export const fetchCategories = async () => {
   try {
     const response = await fetch(

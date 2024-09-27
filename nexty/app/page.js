@@ -7,9 +7,14 @@ import SearchBar from "./components/searchBar";
 import SortOptions from "./components/SortOptions";
 import CategoryFilter from "./components/CategoryFilter";
 import { fetchProducts } from "./lib/fetchProducts";
-import { fetchCategories } from "./lib/fecthCategories"; 
+import { fetchCategories } from "./lib/fecthCategories";
 import Header from "./components/Header";
 
+/**
+ * Home component for displaying products with search, sort, and category filter options.
+ *
+ * @returns {JSX.Element} - Rendered Home component.
+ */
 export default function Home() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -25,7 +30,7 @@ export default function Home() {
 
   useEffect(() => {
     const loadCategories = async () => {
-      const categoriesData = await fetchCategories(); // Use the new function
+      const categoriesData = await fetchCategories();
       setCategories(categoriesData);
     };
 
@@ -45,6 +50,11 @@ export default function Home() {
     loadProducts();
   }, [page, search, sort, category]);
 
+  /**
+   * Handles pagination to load products for a new page.
+   *
+   * @param {number} newPage - The page number to navigate to.
+   */
   const handlePagination = (newPage) => {
     if (!loading) {
       const params = new URLSearchParams(searchParams);
@@ -53,6 +63,9 @@ export default function Home() {
     }
   };
 
+  /**
+   * Resets all filters, search, and sort options, returning to the default product list.
+   */
   const handleReset = () => {
     router.push("/");
   };

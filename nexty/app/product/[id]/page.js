@@ -1,8 +1,17 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
+/**
+ * Fetches product details by productId from the API.
+ *
+ * @async
+ * @param {string} productId - The unique identifier of the product.
+ * @returns {Promise<Object>} - The product data.
+ * @throws {Error} - Throws an error if the request fails.
+ */
 async function getProduct(productId) {
   const res = await fetch(
     `https://next-ecommerce-api.vercel.app/products/${productId}`,
@@ -16,6 +25,14 @@ async function getProduct(productId) {
   return res.json();
 }
 
+/**
+ * ProductDetailPage component for displaying the details of a product.
+ *
+ * @param {Object} props - Component properties.
+ * @param {Object} props.params - URL parameters.
+ * @param {string} props.params.id - The ID of the product to be fetched.
+ * @returns {JSX.Element} - Rendered product details page.
+ */
 const ProductDetailPage = ({ params }) => {
   const { id: productId } = params;
   const router = useRouter();
@@ -77,11 +94,19 @@ const ProductDetailPage = ({ params }) => {
   }
 
   if (error) {
-    return <p className="text-red-500 text-center mt-4 text-xl font-semibold">{error}</p>;
+    return (
+      <p className="text-red-500 text-center mt-4 text-xl font-semibold">
+        {error}
+      </p>
+    );
   }
 
   if (!product) {
-    return <p className="text-gray-500 text-center mt-4 text-xl font-semibold">Product not found.</p>;
+    return (
+      <p className="text-gray-500 text-center mt-4 text-xl font-semibold">
+        Product not found.
+      </p>
+    );
   }
 
   return (
@@ -92,8 +117,17 @@ const ProductDetailPage = ({ params }) => {
           onClick={() => router.back()}
           className="mb-8 text-blue-600 hover:text-blue-800 transition-colors duration-300 flex items-center space-x-2"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+              clipRule="evenodd"
+            />
           </svg>
           <span>Back to results</span>
         </button>
@@ -132,7 +166,8 @@ const ProductDetailPage = ({ params }) => {
                         objectFit="cover"
                         className="transition-opacity duration-300 hover:opacity-75"
                         onError={(e) => {
-                          e.currentTarget.src = "/path/to/placeholder-image.jpg";
+                          e.currentTarget.src =
+                            "/path/to/placeholder-image.jpg";
                         }}
                       />
                     </div>
@@ -143,14 +178,20 @@ const ProductDetailPage = ({ params }) => {
 
             {/* Product Details */}
             <div className="space-y-6">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{product.title}</h1>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                {product.title}
+              </h1>
               <div className="flex items-center justify-between">
-                <p className="text-4xl font-semibold text-green-500">${product.price.toFixed(2)}</p>
+                <p className="text-4xl font-semibold text-green-500">
+                  ${product.price.toFixed(2)}
+                </p>
                 <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
                   {product.category}
                 </span>
               </div>
-              <p className="text-lg text-gray-600 dark:text-gray-300">{product.description}</p>
+              <p className="text-lg text-gray-600 dark:text-gray-300">
+                {product.description}
+              </p>
               <div className="space-y-4 text-sm">
                 <div className="flex justify-between">
                   <span className="font-semibold">Warranty:</span>
@@ -158,7 +199,9 @@ const ProductDetailPage = ({ params }) => {
                 </div>
                 <div className="flex justify-between">
                   <span className="font-semibold">Discount:</span>
-                  <span className="text-red-500 font-semibold">{product.discountPercentage}% OFF</span>
+                  <span className="text-red-500 font-semibold">
+                    {product.discountPercentage}% OFF
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-semibold">Stock:</span>
@@ -173,7 +216,10 @@ const ProductDetailPage = ({ params }) => {
                 <span className="font-semibold">Tags: </span>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {product.tags.map((tag, index) => (
-                    <span key={index} className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded-full text-sm">
+                    <span
+                      key={index}
+                      className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded-full text-sm"
+                    >
                       {tag}
                     </span>
                   ))}
@@ -186,9 +232,16 @@ const ProductDetailPage = ({ params }) => {
         {/* Reviews Section */}
         <div className="mt-12 bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Customer Reviews</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Customer Reviews
+            </h2>
             <div className="flex items-center space-x-2">
-              <label htmlFor="sort-reviews" className="text-sm font-medium text-gray-700 dark:text-gray-300">Sort by:</label>
+              <label
+                htmlFor="sort-reviews"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Sort by:
+              </label>
               <select
                 id="sort-reviews"
                 value={sortOption}
@@ -202,24 +255,37 @@ const ProductDetailPage = ({ params }) => {
               </select>
             </div>
           </div>
-          <p className="text-lg font-semibold text-yellow-500 mb-4">Overall Rating: {product.rating}/5</p>
+          <p className="text-lg font-semibold text-yellow-500 mb-4">
+            Overall Rating: {product.rating}/5
+          </p>
           {sortedReviews.length > 0 ? (
             <ul className="space-y-8">
               {sortedReviews.map((review, index) => (
-                <li key={index} className="border-b border-gray-200 dark:border-gray-700 pb-6">
+                <li
+                  key={index}
+                  className="border-b border-gray-200 dark:border-gray-700 pb-6"
+                >
                   <div className="flex items-center justify-between mb-2">
-                    <p className="font-semibold text-lg text-gray-900 dark:text-white">{review.reviewerName}</p>
+                    <p className="font-semibold text-lg text-gray-900 dark:text-white">
+                      {review.reviewerName}
+                    </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       {new Date(review.date).toLocaleDateString()}
                     </p>
                   </div>
-                  <p className="text-yellow-500 mb-2">Rating: {review.rating}/5</p>
-                  <p className="text-gray-600 dark:text-gray-300">{review.comment}</p>
+                  <p className="text-yellow-500 mb-2">
+                    Rating: {review.rating}/5
+                  </p>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    {review.comment}
+                  </p>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-gray-600 dark:text-gray-400 text-center py-4">No reviews yet.</p>
+            <p className="text-gray-600 dark:text-gray-400 text-center py-4">
+              No reviews yet.
+            </p>
           )}
         </div>
       </div>

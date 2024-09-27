@@ -1,5 +1,15 @@
-// lib/fetchProducts.js
-
+/**
+ * Fetches products with pagination, search, sorting, and category filtering.
+ *
+ * @async
+ * @function fetchProducts
+ * @param {number} page - The current page number for pagination.
+ * @param {string} [search] - The search term for filtering products.
+ * @param {string} [sort] - The sorting option in the format "sortBy-order" (e.g., "price-asc").
+ * @param {string} [category] - The category to filter products by.
+ * @returns {Promise<Array>} - A promise that resolves to an array of products.
+ * @throws {Error} - Throws an error if the request fails.
+ */
 export async function fetchProducts(page, search, sort, category) {
   const limit = 20;
   const skip = (page - 1) * limit;
