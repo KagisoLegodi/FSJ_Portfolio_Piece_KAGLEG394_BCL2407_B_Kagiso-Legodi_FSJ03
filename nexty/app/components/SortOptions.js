@@ -2,10 +2,22 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 
+/**
+ * SortOptions component for sorting products by price.
+ *
+ * @param {Object} props - Component properties.
+ * @param {string} props.selectedSort - The currently selected sort option.
+ * @returns {JSX.Element} - Rendered SortOptions component.
+ */
 export default function SortOptions({ selectedSort }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  /**
+   * Handle sort option change and update query parameters.
+   *
+   * @param {string} sort - The selected sorting option (e.g., "price-asc", "price-desc").
+   */
   const onSortChange = (sort) => {
     const params = new URLSearchParams(searchParams);
     if (sort) params.set("sort", sort);
