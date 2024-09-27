@@ -95,20 +95,28 @@ The project is structured as follows:
 ### Searching Products
 
 - Use the search bar at the top of the page to search for products by name or description.
+![example](https://github.com/user-attachments/assets/b304e0de-01a3-4107-9abb-5b8e5c3a51f1)
 
 ### Sorting Products
 
 - Use the sort dropdown to sort products by price (low to high or high to low).
+![example 2](https://github.com/user-attachments/assets/3503d57e-9456-4f51-98a7-326c7c9f96e3)
+
 
 ### Filtering by Category
 
 - Use the category dropdown to filter products by specific categories.
+![example 3](https://github.com/user-attachments/assets/b0775de5-ad94-4d89-8234-93475631539c)
 
 ### Resetting Filters
 
 - Click the "Reset All Filters" button to clear all search, sort, and category filters.
 
-[Consider adding screenshots or GIFs here to illustrate these features visually]
+[ ![example 4](https://github.com/user-attachments/assets/1e79a072-3148-4ab3-9f6b-2eb3372be63d)
+
+
+
+ ]
 
 ## API Integration
 
