@@ -21,7 +21,7 @@ export default function Header({ title = "NEXTY E-Commerce", description = "Disc
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
       </Head>
-      <header className="bg-gray-600 p-4 shadow-lg">
+      <header className="bg-gray-300 p-4 shadow-lg">
         <nav className="container mx-auto flex justify-between items-center">
           <Link
             href="/"
