@@ -1,6 +1,7 @@
 # NEXTY E-Commerce Project
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [Features](#features)
 3. [Technologies Used](#technologies-used)
@@ -57,23 +58,27 @@ The project is structured as follows:
 ## Setup Instructions
 
 1. Clone the repository:
+
    ```
    git clone https://github.com/your-username/nexty-ecommerce.git
    cd nexty-ecommerce
    ```
 
 2. Install dependencies:
+
    ```
    npm install
    ```
 
 3. Set up environment variables:
    Create a `.env.local` file in the root directory and add the following:
+
    ```
    NEXT_PUBLIC_API_URL=https://next-ecommerce-api.vercel.app
    ```
 
 4. Run the development server:
+
    ```
    npm run dev
    ```
