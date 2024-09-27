@@ -1,7 +1,18 @@
 import Head from "next/head";
 import Link from "next/link";
 
-export default function Header({ title = "NEXTY E-Commerce", description = "Discover Amazing Products" }) {
+/**
+ * Header component for setting up page meta information and rendering a navigation bar.
+ *
+ * @param {Object} props - Component properties.
+ * @param {string} [props.title="NEXTY E-Commerce"] - The title to be displayed in the browser tab.
+ * @param {string} [props.description="Discover Amazing Products"] - The description meta tag for SEO.
+ * @returns {JSX.Element} - The rendered Header component.
+ */
+export default function Header({
+  title = "NEXTY E-Commerce",
+  description = "Discover Amazing Products",
+}) {
   return (
     <>
       <Head>
@@ -14,10 +25,24 @@ export default function Header({ title = "NEXTY E-Commerce", description = "Disc
         <meta property="og:image" content="/path-to-image.jpg" />
         <meta name="msapplication-TileColor" content="#00aba9" />
         <meta name="theme-color" content="#ffffff" />
-        
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
       </Head>
@@ -30,30 +55,7 @@ export default function Header({ title = "NEXTY E-Commerce", description = "Disc
             NEXTY E-Commerce
           </Link>
           <div className="flex space-x-6 text-white">
-            {/* Wishlist Link */}
-            {/* <Link
-              href="/wishlist"
-              className="flex items-center space-x-1 hover:text-blue-200 transition duration-300"
-            >
-              <FaHeart className="text-lg" />
-              <span>Wishlist</span>
-            </Link> */}
-            {/* Cart Link */}
-            {/* <Link
-              href="/cart"
-              className="flex items-center space-x-1 hover:text-blue-200 transition duration-300"
-            >
-              <FaShoppingCart className="text-lg" />
-              <span>Cart</span>
-            </Link> */}
-            {/* Login Link */}
-            {/* <Link
-              href="/login"
-              className="flex items-center space-x-1 hover:text-blue-200 transition duration-300"
-            >
-              <FaUser className="text-lg" />
-              <span>Login</span>
-            </Link> */}
+            {/* Future links for Wishlist, Cart, and Login can be uncommented */}
           </div>
         </nav>
       </header>
