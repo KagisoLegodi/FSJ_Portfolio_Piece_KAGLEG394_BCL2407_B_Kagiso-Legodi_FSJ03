@@ -75,7 +75,7 @@ export default function ProductList({ product }) {
           </>
         )}
       </div>
-      <h2 className="text-lg font-bold truncate text-black underline">
+      <h2 className="text-lg font-bold truncate text-black ">
         {product.title}
       </h2>
       <p className="text-gray-700">{product.category}</p>
