@@ -78,7 +78,6 @@ export default function Home() {
         description="Browse our product catalog"
       />
 
-      {/* Wrap in Suspense */}
       <Suspense fallback={<div>Loading...</div>}>
         <section className="container mx-auto px-4 py-8">
           <h1 className="text-3xl md:text-4xl font-extrabold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
