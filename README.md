@@ -60,8 +60,7 @@ The project is structured as follows:
 1. Clone the repository:
 
    ```
-   git clone https://github.com/your-username/nexty-ecommerce.git
-   cd nexty-ecommerce
+   git clone https://github.com/KagisoLegodi/KAGLEG394_JSE2407_B_Kagiso-Legodi_FSJ02.git
    ```
 
 2. Install dependencies:
