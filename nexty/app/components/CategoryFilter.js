@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 
 /**
  * CategoryFilter component for selecting and filtering products by category.
@@ -16,7 +16,7 @@ export default function CategoryFilter({ categories, selectedCategory }) {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    console.log('Categories received in CategoryFilter:', categories);
+    console.log("Categories received in CategoryFilter:", categories);
   }, [categories]);
 
   /**
@@ -33,23 +33,25 @@ export default function CategoryFilter({ categories, selectedCategory }) {
   };
 
   return (
-    <div className="flex justify-center mb-6">
-      <select
-        value={selectedCategory}
-        onChange={(e) => onCategoryChange(e.target.value)}
-        className="px-4 py-2 border rounded-md text-black"
-      >
-        <option value="">All Categories</option>
-        {Array.isArray(categories) && categories.length > 0 ? (
-          categories.map((category) => (
-            <option key={category} value={category.toLowerCase()}>
-              {category}
-            </option>
-          ))
-        ) : (
-          <option value="">Loading categories...</option>
-        )}
-      </select>
-    </div>
+    <Suspense fallback={<div>Loading categories...</div>}>
+      <div className="flex justify-center mb-6">
+        <select
+          value={selectedCategory}
+          onChange={(e) => onCategoryChange(e.target.value)}
+          className="px-4 py-2 border rounded-md text-black"
+        >
+          <option value="">All Categories</option>
+          {Array.isArray(categories) && categories.length > 0 ? (
+            categories.map((category) => (
+              <option key={category} value={category.toLowerCase()}>
+                {category}
+              </option>
+            ))
+          ) : (
+            <option value="">Loading categories...</option>
+          )}
+        </select>
+      </div>
+    </Suspense>
   );
 }
