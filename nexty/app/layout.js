@@ -1,15 +1,14 @@
-import './globals.css';
+import "./globals.css";
 
 export const metadata = {
-  title: 'NEXTY',
-  description: 'NEXTY - Best place to buy products online.',
+  title: "NEXTY",
+  description: "NEXTY - Best place to buy products online.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        
         <main>{children}</main>
       </body>
     </html>
