@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useMemo } from "react";
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ProductList from "./components/ProductList";
@@ -11,17 +11,19 @@ import { fetchProducts } from "./lib/fetchProducts";
 import { fetchCategories } from "./lib/fecthCategories";
 import Header from "./components/Header";
 
+/**
+ * Home component for displaying products with search, sort, and category filter options.
+ *
+ * @returns {JSX.Element} - Rendered Home component.
+ */
 export default function Home() {
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const router = useRouter();
 
-  const memoizedSearchParams = useMemo(() => {
-    const search = searchParams.get("search") || "";
-    const sort = searchParams.get("sort") || "";
-    const category = searchParams.get("category") || "";
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    return { search, sort, category, page };
-  }, [searchParams]);
+  const search = searchParams.get("search") || "";
+  const sort = searchParams.get("sort") || "";
+  const category = searchParams.get("category") || "";
+  const page = parseInt(searchParams.get("page") || "1", 10);
 
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -39,16 +41,21 @@ export default function Home() {
   useEffect(() => {
     const loadProducts = async () => {
       setLoading(true);
-      const { search, sort, category, page } = memoizedSearchParams;
       const fetchedProducts = await fetchProducts(page, search, sort, category);
       console.log("Fetched Products:", fetchedProducts); // Debug log
       setProducts(fetchedProducts);
       setLoading(false);
     };
 
+    // Load products whenever the search, sort, category, or page changes
     loadProducts();
-  }, [memoizedSearchParams]);
+  }, [page, search, sort, category]);
 
+  /**
+   * Handles pagination to load products for a new page.
+   *
+   * @param {number} newPage - The page number to navigate to.
+   */
   const handlePagination = (newPage) => {
     if (!loading) {
       const params = new URLSearchParams(searchParams);
@@ -57,6 +64,9 @@ export default function Home() {
     }
   };
 
+  /**
+   * Resets all filters, search, and sort options, returning to the default product list.
+   */
   const handleReset = () => {
     router.push("/");
   };
@@ -77,16 +87,16 @@ export default function Home() {
           <div className="mb-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
               <div className="w-full md:w-1/3">
-                <SearchBar initialSearchTerm={memoizedSearchParams.search} />
+                <SearchBar initialSearchTerm={search} />
               </div>
               <div className="w-full md:w-1/3">
                 <CategoryFilter
                   categories={categories}
-                  selectedCategory={memoizedSearchParams.category}
+                  selectedCategory={category}
                 />
               </div>
               <div className="w-full md:w-1/3">
-                <SortOptions selectedSort={memoizedSearchParams.sort} />
+                <SortOptions selectedSort={sort} />
               </div>
             </div>
           </div>
@@ -118,15 +128,15 @@ export default function Home() {
 
           <div className="flex justify-between items-center mt-8">
             <button
-              onClick={() => handlePagination(Math.max(1, memoizedSearchParams.page - 1))}
-              disabled={memoizedSearchParams.page === 1 || loading}
+              onClick={() => handlePagination(Math.max(1, page - 1))}
+              disabled={page === 1 || loading}
               className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading && memoizedSearchParams.page > 1 ? "Loading..." : "Previous"}
+              {loading && page > 1 ? "Loading..." : "Previous"}
             </button>
-            <span className="font-semibold text-gray-700">Page {memoizedSearchParams.page}</span>
+            <span className="font-semibold text-gray-700">Page {page}</span>
             <button
-              onClick={() => handlePagination(memoizedSearchParams.page + 1)}
+              onClick={() => handlePagination(page + 1)}
               disabled={products.length < 20 || loading}
               className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
             >
