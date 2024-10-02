@@ -157,7 +157,6 @@
 //   );
 // }
 
-
 "use client";
 
 import { Suspense } from "react";
@@ -171,11 +170,9 @@ import { fetchProducts } from "./lib/fetchProducts";
 import { fetchCategories } from "./lib/fecthCategories";
 import Header from "./components/Header";
 
-/**
- * Home component for displaying products with search, sort, and category filter options.
- *
- * @returns {JSX.Element} - Rendered Home component.
- */
+// Fallback component for loading state
+const Loading = () => <div>Loading...</div>;
+
 export default function Home() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -190,7 +187,6 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Fetch categories once when component mounts
     const loadCategories = async () => {
       const categoriesData = await fetchCategories();
       setCategories(categoriesData);
@@ -200,23 +196,17 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // Fetch products whenever filters change
     const loadProducts = async () => {
       setLoading(true);
       const fetchedProducts = await fetchProducts(page, search, sort, category);
-      console.log("Fetched Products:", fetchedProducts); // Debug log
       setProducts(fetchedProducts);
       setLoading(false);
     };
 
+    // Load products whenever the search, sort, category, or page changes
     loadProducts();
   }, [page, search, sort, category]);
 
-  /**
-   * Handles pagination to load products for a new page.
-   *
-   * @param {number} newPage - The page number to navigate to.
-   */
   const handlePagination = (newPage) => {
     if (!loading) {
       const params = new URLSearchParams(searchParams);
@@ -225,9 +215,6 @@ export default function Home() {
     }
   };
 
-  /**
-   * Resets all filters, search, and sort options, returning to the default product list.
-   */
   const handleReset = () => {
     router.push("/");
   };
@@ -239,36 +226,29 @@ export default function Home() {
         description="Browse our product catalog"
       />
 
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading />}>
         <section className="container mx-auto px-4 py-8">
           <h1 className="text-3xl md:text-4xl font-extrabold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
             Discover Amazing Products
           </h1>
 
-          {/* Filter Controls */}
           <div className="mb-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
-              {/* Search Bar */}
               <div className="w-full md:w-1/3">
                 <SearchBar initialSearchTerm={search} />
               </div>
-
-              {/* Category Filter */}
               <div className="w-full md:w-1/3">
                 <CategoryFilter
                   categories={categories}
                   selectedCategory={category}
                 />
               </div>
-
-              {/* Sort Options */}
               <div className="w-full md:w-1/3">
                 <SortOptions selectedSort={sort} />
               </div>
             </div>
           </div>
 
-          {/* Reset Filters Button */}
           <div className="flex justify-center mb-6">
             <button
               onClick={handleReset}
@@ -278,7 +258,6 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Products List */}
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500"></div>
@@ -295,7 +274,6 @@ export default function Home() {
             </p>
           )}
 
-          {/* Pagination Controls */}
           <div className="flex justify-between items-center mt-8">
             <button
               onClick={() => handlePagination(Math.max(1, page - 1))}
@@ -316,7 +294,6 @@ export default function Home() {
         </section>
       </Suspense>
 
-      {/* Footer */}
       <footer className="bg-white shadow-md dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <p className="text-center text-gray-500 dark:text-gray-400">
