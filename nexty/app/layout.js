@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import "./globals.css";
 
 export const metadata = {
@@ -9,7 +10,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+      <Suspense>
         <main>{children}</main>
+      </Suspense>
       </body>
     </html>
   );
