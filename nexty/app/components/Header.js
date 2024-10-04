@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
+import {FaUser } from "react-icons/fa";
 
 /**
  * Header component for setting up page meta information and rendering a navigation bar.
@@ -37,6 +38,17 @@ export default function Header({ title = "NEXTY E-Commerce", description = "Disc
           >
             NEXTY E-Commerce
           </Link>
+          {/* Login Link */}
+          <Link
+              href="/login"
+              className="flex items-center space-x-1 hover:text-blue-500 transition duration-300 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600"
+              // Flexbox for Login link with consistent styling.
+            >
+              <FaUser className="text-lg text-black" />
+              {/* User icon for login */}
+              <span>Login</span>
+              {/* Text label for Login */}
+            </Link>
         </nav>
       </header>
     </>
