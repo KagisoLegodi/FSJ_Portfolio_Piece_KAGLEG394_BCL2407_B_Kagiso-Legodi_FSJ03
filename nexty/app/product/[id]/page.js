@@ -25,20 +25,20 @@ async function getProduct(productId) {
   return res.json();
 }
 
-/**
- * Generates dynamic metadata for the product page.
- *
- * @async
- * @param {Object} params - The params object containing the product id.
- * @returns {Promise<Object>} - The metadata object with title and description.
- */
-export async function generateMetadata({ params }) {
-  const product = await getProduct(params.id);
-  return {
-    title: `${product.title} | NEXTY`,
-    description: product.description,
-  };
-}
+// /**
+//  * Generates dynamic metadata for the product page.
+//  *
+//  * @async
+//  * @param {Object} params - The params object containing the product id.
+//  * @returns {Promise<Object>} - The metadata object with title and description.
+//  */
+// export async function generateMetadata({ params }) {
+//   const product = await getProduct(params.id);
+//   return {
+//     title: `${product.title} | NEXTY`,
+//     description: product.description,
+//   };
+// }
 
 /**
  * ProductDetailPage component for displaying the details of a product.
