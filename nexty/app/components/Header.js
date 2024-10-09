@@ -1,56 +1,72 @@
-import Head from "next/head";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import {FaUser } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { getCurrentUser, logOut } from "../lib/firebaseAuth";
+import { FaUser } from "react-icons/fa";
 
-/**
- * Header component for setting up page meta information and rendering a navigation bar.
- *
- * @param {Object} props - Component properties.
- * @param {string} [props.title="NEXTY E-Commerce"] - The title to be displayed in the browser tab.
- * @param {string} [props.description="Discover Amazing Products"] - The description meta tag for SEO.
- * @returns {JSX.Element} - The rendered Header component.
- */
-export default function Header({ title = "NEXTY E-Commerce", description = "Discover Amazing Products" }) {
+export default function Header() {
+  const [user, setUser] = useState(null);
+  const router = useRouter();
+
+  // Load current user on component mount
+  useEffect(() => {
+    const loadUser = async () => {
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+    };
+    loadUser();
+  }, []);
+
+  const handleLogout = async () => {
+    await logOut();
+    setUser(null); // Reset user state after logout
+    router.push("/"); // Redirect to home page after logging out
+  };
+
   return (
-    <>
-      <Head>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://yourwebsite.com" />
-        <meta property="og:image" content="/path-to-image.jpg" />
-        <meta name="msapplication-TileColor" content="#00aba9" />
-        <meta name="theme-color" content="#ffffff" />
+    <header className="bg-gray-300 p-4 shadow-lg">
+      <nav className="container mx-auto flex justify-between items-center">
+        <Link
+          href="/"
+          className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600"
+        >
+          NEXTY E-Commerce
+        </Link>
 
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="manifest" href="/site.webmanifest" />
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
-      </Head>
-      <header className="bg-gray-300 p-4 shadow-lg">
-        <nav className="container mx-auto flex justify-between items-center">
-          <Link
-            href="/"
-            className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600"
-          >
-            NEXTY E-Commerce
-          </Link>
-          {/* Login Link */}
-          <Link
-              href="/login"
-              className="flex items-center space-x-1 hover:text-blue-500 transition duration-300 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600"
-              // Flexbox for Login link with consistent styling.
-            >
-              <FaUser className="text-lg text-black" />
-              {/* User icon for login */}
-              <span>Login</span>
-              {/* Text label for Login */}
-            </Link>
-        </nav>
-      </header>
-    </>
+        <div className="flex items-center space-x-4">
+          {user ? (
+            // Display user's email and a logout button if logged in
+            <>
+              <span className="text-gray-700">Welcome, {user.email}</span>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            // Show login and sign-up links if the user is not logged in
+            <>
+              <Link
+                href="/login"
+                className="flex items-center space-x-1 hover:text-blue-500 transition duration-300"
+              >
+                <FaUser className="text-lg text-black" />
+                <span>Login</span>
+              </Link>
+              <Link
+                href="/signup"
+                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
+        </div>
+      </nav>
+    </header>
   );
 }
