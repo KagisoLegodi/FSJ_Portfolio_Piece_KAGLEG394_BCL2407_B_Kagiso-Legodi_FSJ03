@@ -1,7 +1,5 @@
-// app/api/products/[id]/route.js
-
 import { NextResponse } from "next/server";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../../../lib/firebase"; // Ensure this path is correct
 
 export async function GET(_request, { params }) {
@@ -16,12 +14,29 @@ export async function GET(_request, { params }) {
   }
 
   try {
-    const productDocRef = doc(db, "products", id); // Adjust "products" to your collection name
+    const productDocRef = doc(db, "products", id);
     const productDocSnap = await getDoc(productDocRef);
 
     if (productDocSnap.exists()) {
       const productData = productDocSnap.data();
-      return NextResponse.json(productData);
+
+      // Fetch reviews for the product
+      const reviewsCollectionRef = collection(db, "products", id, "reviews");
+      const reviewsSnapshot = await getDocs(reviewsCollectionRef);
+
+      const reviews = reviewsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      // Add reviews to the product data
+      const productWithReviews = {
+        ...productData,
+        id: productDocSnap.id,
+        reviews: reviews,
+      };
+
+      return NextResponse.json(productWithReviews);
     } else {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }

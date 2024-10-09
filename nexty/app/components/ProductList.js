@@ -48,7 +48,7 @@ export default function ProductList(product) {
           <div className="flex items-center mt-2">
             <span className="text-yellow-400 mr-1">★</span>
             <span className="text-gray-600 text-sm">
-              {product.product.rating}
+              {product.product.reviews}
             </span>
           </div>
         </Link>
