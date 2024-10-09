@@ -1,17 +1,25 @@
-import { db } from "./firebase"; // Ensure this path is correct
-import { collection, getDocs } from "firebase/firestore";
+import { NextResponse } from "next/server";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebase";
 
-export const fetchCategories = async () => {
+export async function GET() {
   try {
-    const categoriesSnapshot = await getDocs(collection(db, "categories"));
-    const categories = categoriesSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const categoriesDocRef = doc(db, "categories", "allCategories");
+    const categoriesSnapshot = await getDoc(categoriesDocRef);
 
-    return categories;
+    if (categoriesSnapshot.exists()) {
+      const categories = categoriesSnapshot
+        .data()
+        .categories.arrayValue.values.map((value) => value.stringValue);
+
+      return NextResponse.json({ categories });
+    } else {
+      return NextResponse.json(
+        { error: "No Categories Found" },
+        { status: 404 }
+      );
+    }
   } catch (error) {
-    console.error("Error fetching categories:", error);
-    throw error; // Throw the error to be handled by the calling function
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
-};
+}

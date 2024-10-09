@@ -7,7 +7,7 @@ import SearchBar from "./components/searchBar";
 import SortOptions from "./components/SortOptions";
 import CategoryFilter from "./components/CategoryFilter";
 import { fetchProducts } from "./lib/fetchProducts";
-import { fetchCategories } from "./lib/fecthCategories";
+import { fetchCategories } from "./lib/fetchCategories"; // Correct import path
 import Header from "./components/Header";
 
 /**
@@ -53,13 +53,11 @@ export default function Home() {
         setCategories(categoriesData);
       } catch (error) {
         console.error("Error loading categories:", error);
-        // Optionally, you could set an error state here
       }
     };
-  
+
     loadCategories();
   }, []);
-  
 
   // Load products based on search params
   useEffect(() => {
@@ -73,8 +71,8 @@ export default function Home() {
           sort,
           category
         );
-        console.log("Fetched Products:", fetchedProducts); // Debug log
-        setProducts(fetchedProducts.products); // Ensure to access products from fetched data
+        console.log("Fetched Products:", fetchedProducts);
+        setProducts(fetchedProducts.products);
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -95,8 +93,8 @@ export default function Home() {
       const params = new URLSearchParams(window.location.search);
       params.set("page", newPage.toString());
       const newUrl = `${window.location.pathname}?${params.toString()}`;
-      router.push(newUrl); // Navigate to the new URL
-      setSearchData((prevData) => ({ ...prevData, page: newPage })); // Update state
+      router.push(newUrl);
+      setSearchData((prevData) => ({ ...prevData, page: newPage }));
     }
   };
 
@@ -107,11 +105,6 @@ export default function Home() {
     router.push("/"); // Reset URL to default without filters
   };
 
-  console.log("products");
-  console.log(products);
-  // console.log("products[0].data");
-  // console.log(products[0].data);
-
   return (
     <>
       <Header
@@ -119,7 +112,6 @@ export default function Home() {
         description="Browse our product catalog"
       />
 
-      {/* Suspense boundary for handling search params */}
       <Suspense fallback={<div>Loading filters...</div>}>
         <ProductFilter setSearchData={setSearchData} />
       </Suspense>
@@ -135,7 +127,10 @@ export default function Home() {
               <SearchBar initialSearchTerm={searchData.search} />
             </div>
             <div className="w-full md:w-1/3">
-              <CategoryFilter />
+              <CategoryFilter
+                categories={categories}
+                selectedCategory={searchData.category}
+              />
             </div>
             <div className="w-full md:w-1/3">
               <SortOptions selectedSort={searchData.sort} />
@@ -158,9 +153,9 @@ export default function Home() {
           </div>
         ) : products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-           {products.map((product) => (
+            {products.map((product) => (
               <ProductList key={product.id} product={product.data} />
-            ))} 
+            ))}
           </div>
         ) : (
           <p className="text-center text-xl text-gray-600 mt-8">
@@ -171,7 +166,7 @@ export default function Home() {
         <div className="flex justify-between items-center mt-8">
           <button
             onClick={() => handlePagination(Math.max(1, searchData.page - 1))}
-            disabled={searchData.page = 1 || loading}
+            disabled={searchData.page === 1 || loading}
             className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading && searchData.page > 1 ? "Loading..." : "Previous"}
