@@ -20,6 +20,7 @@ export async function GET(req) {
   const pageSize = parseInt(searchParams.get("pageSize") || "20", 10);
 
   try {
+    // Start building the query for products
     let productsQuery = collection(db, "products");
 
     // Apply category filter
@@ -34,17 +35,18 @@ export async function GET(req) {
       productsQuery = query(productsQuery, orderBy("price", "desc"));
     }
 
-    // Get total count
+    // Get total count of products
     const totalSnapshot = await getCountFromServer(productsQuery);
     const total = totalSnapshot.data().count;
 
-    // Apply pagination
+    // Determine the starting point for pagination
     const startAfterDoc =
       page > 1
         ? (await getDocs(query(productsQuery, limit((page - 1) * pageSize))))
-            .docs[pageSize - 1]
+            .docs[pageSize - 1] // Get the last document of the previous page
         : null;
 
+    // Apply pagination logic
     if (startAfterDoc) {
       productsQuery = query(
         productsQuery,
@@ -69,6 +71,7 @@ export async function GET(req) {
       products = result.map((res) => res.item);
     }
 
+    // Return the response
     return new Response(
       JSON.stringify({
         products,
