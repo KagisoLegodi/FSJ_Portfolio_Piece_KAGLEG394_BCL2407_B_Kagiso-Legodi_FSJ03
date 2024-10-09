@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../lib/firebase"; // Ensure this path is correct
 
-export async function GET(request, { params }) {
+export async function GET(_request, { params }) {
   const { id } = params; // Retrieve the product ID from the route parameters
 
   // Ensure params is defined and contains the id
