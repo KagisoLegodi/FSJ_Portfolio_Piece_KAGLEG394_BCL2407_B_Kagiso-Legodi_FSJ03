@@ -63,6 +63,8 @@ const ProductDetailPage = ({ params }) => {
     const fetchProduct = async () => {
       try {
         const productData = await getProduct(productId);
+        console.log("productData")
+        console.log(productData);
         setProduct(productData);
         setMainImage(productData.thumbnail);
         setSortedReviews(productData.reviews || []);

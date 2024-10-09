@@ -3,14 +3,6 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, Suspense } from "react";
 
-/**
- * CategoryFilter component for selecting and filtering products by category.
- *
- * @param {Object} props - Component properties.
- * @param {Array<string>} props.categories - List of categories to display.
- * @param {string} props.selectedCategory - Currently selected category.
- * @returns {JSX.Element} - Rendered CategoryFilter component.
- */
 export default function CategoryFilter({ categories, selectedCategory }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -19,16 +11,15 @@ export default function CategoryFilter({ categories, selectedCategory }) {
     console.log("Categories received in CategoryFilter:", categories);
   }, [categories]);
 
-  /**
-   * Handle category change and update query parameters.
-   *
-   * @param {string} category - The category selected by the user.
-   */
   const onCategoryChange = (category) => {
     const params = new URLSearchParams(searchParams);
-    if (category) params.set("category", category);
+    if (category)
+      params.set(
+        "category",
+        category
+      ); // Make sure the key matches your API parameter
     else params.delete("category");
-    params.set("page", "1");
+    params.set("page", "1"); // Reset to the first page on category change
     router.push(`/?${params.toString()}`);
   };
 
@@ -41,10 +32,11 @@ export default function CategoryFilter({ categories, selectedCategory }) {
           className="px-4 py-2 border rounded-md text-black"
         >
           <option value="">All Categories</option>
-          {Array.isArray(categories) && categories.length > 0 ? (
+          {categories > 0 ? (
             categories.map((category) => (
-              <option key={category} value={category.toLowerCase()}>
+              <option key={category} value={category}>
                 {category}
+
               </option>
             ))
           ) : (

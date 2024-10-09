@@ -1,37 +1,29 @@
-/**
- * Fetches products with pagination, search, sorting, and category filtering.
- *
- * @async
- * @function fetchProducts
- * @param {number} page - The current page number for pagination.
- * @param {string} [search] - The search term for filtering products.
- * @param {string} [sort] - The sorting option in the format "sortBy-order" (e.g., "price-asc").
- * @param {string} [category] - The category to filter products by.
- * @returns {Promise<Array>} - A promise that resolves to an array of products.
- * @throws {Error} - Throws an error if the request fails.
- */
-export async function fetchProducts(page, search, sort, category) {
-  const limit = 20;
-  const skip = (page - 1) * limit;
+export async function fetchProducts(
+  lastDocId = "",
+  search = "",
+  sort = "",
+  category = ""
+) {
+  const pageSize = 20; // You can adjust this value as needed
+  const queryParams = new URLSearchParams({
+    lastDocId,
+    pageSize: pageSize.toString(),
+    search,
+    sort,
+    category,
+  });
 
-  let url = `https://next-ecommerce-api.vercel.app/products?limit=${limit}&skip=${skip}`;
-
-  if (search) url += `&search=${encodeURIComponent(search)}`;
-  if (category) url += `&category=${encodeURIComponent(category)}`;
-
-  if (sort) {
-    const [sortBy, order] = sort.split("-");
-    url += `&sortBy=${sortBy}&order=${order}`;
-  }
-
-  try {
-    const response = await fetch(url);
+  // try {
+    console.log("Fetching products with params:", queryParams.toString());
+    const response = await fetch(`/api/products?${queryParams}`);
     if (!response.ok) {
       throw new Error("Failed to fetch products");
     }
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return [];
-  }
+    const data = await response.json();
+    console.log("Fetched products data:", data);
+    return data;
+  // } catch (error) {
+  //   console.error("Error fetching products:", error);
+  //   throw error;
+  // }
 }
