@@ -9,7 +9,6 @@ import {
   orderBy,
   where,
 } from "firebase/firestore";
-import Fuse from "fuse.js";
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
@@ -33,43 +32,44 @@ export async function GET(req) {
       productsQuery = query(productsQuery, orderBy("price", "asc"));
     } else if (sort === "price-desc") {
       productsQuery = query(productsQuery, orderBy("price", "desc"));
+    } else {
+      // Default sorting by id
+      productsQuery = query(productsQuery, orderBy("id", "desc"));
+    }
+
+    // Apply search filter
+    if (search) {
+      // Assuming you have a 'title' field in your products
+      productsQuery = query(
+        productsQuery,
+        where("title", ">=", search),
+        where("title", "<=", search + "\uf8ff")
+      );
     }
 
     // Get total count of products
     const totalSnapshot = await getCountFromServer(productsQuery);
     const total = totalSnapshot.data().count;
 
-    // Determine the starting point for pagination
-    const startAfterDoc =
-      page > 1
-        ? (await getDocs(query(productsQuery, limit((page - 1) * pageSize))))
-            .docs[pageSize - 1] // Get the last document of the previous page
-        : null;
+    // Paginate the query
+    const startIndex = (page - 1) * pageSize;
+    let paginatedQuery = query(productsQuery, limit(pageSize));
 
-    // Apply pagination logic
-    if (startAfterDoc) {
-      productsQuery = query(
-        productsQuery,
-        startAfter(startAfterDoc),
-        limit(pageSize)
+    if (page > 1) {
+      const prevPageSnapshot = await getDocs(
+        query(productsQuery, limit(startIndex))
       );
-    } else {
-      productsQuery = query(productsQuery, limit(pageSize));
+      const lastVisible =
+        prevPageSnapshot.docs[prevPageSnapshot.docs.length - 1];
+      paginatedQuery = query(paginatedQuery, startAfter(lastVisible));
     }
 
     // Fetch products
-    const snapshot = await getDocs(productsQuery);
-    let products = snapshot.docs.map((doc) => ({
+    const snapshot = await getDocs(paginatedQuery);
+    const products = snapshot.docs.map((doc) => ({
       id: doc.id,
       data: doc.data(),
     }));
-
-    // Search with Fuse.js
-    if (search) {
-      const fuse = new Fuse(products, { keys: ["data.title"] });
-      const result = fuse.search(search);
-      products = result.map((res) => res.item);
-    }
 
     // Return the response
     return new Response(
