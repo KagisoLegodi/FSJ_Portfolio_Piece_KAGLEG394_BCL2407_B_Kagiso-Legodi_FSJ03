@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../../lib/firebase"; // Ensure this path points to where your Firebase config is
+import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { db } from "../../lib/firebase"; // Adjust the path as needed
 import { useAuth } from "../../lib/firebaseAuth"; // Import useAuth hook
 
 // Function to get product data from Firestore by product ID
@@ -21,14 +21,10 @@ async function getProduct(productId) {
 
 // Function to add a review to the product
 async function addReview(productId, reviewData) {
-  const productRef = doc(db, "products", productId);
-  await setDoc(
-    productRef,
-    {
-      reviews: reviewData, // Update the reviews field in Firestore
-    },
-    { merge: true }
-  ); // Use merge to avoid overwriting existing data
+  const productRef = doc(db, "products", productId); // Reference to the product document
+  await updateDoc(productRef, {
+    reviews: arrayUnion(reviewData), // Add the new review to the existing reviews array
+  }); // This uses Firestore's arrayUnion to prevent overwriting
 }
 
 const ProductDetailPage = ({ params }) => {
@@ -142,7 +138,7 @@ const ProductDetailPage = ({ params }) => {
             className="object-contain rounded-xl shadow-lg transition-transform transform hover:scale-105 duration-300 bg-gray-600"
             priority
             onError={(e) => {
-              e.currentTarget.src = "/path/to/placeholder-image.jpg";
+              e.currentTarget.src = "/path/to/placeholder-image.jpg"; // Replace with your placeholder image path
             }}
           />
           <h1 className="text-3xl font-bold mt-6 dark:text-white underline">
@@ -165,7 +161,7 @@ const ProductDetailPage = ({ params }) => {
                   height={96}
                   className="object-contain hover:opacity-75 transition-opacity duration-300 bg-gray-300"
                   onError={(e) => {
-                    e.currentTarget.src = "/path/to/placeholder-image.jpg";
+                    e.currentTarget.src = "/path/to/placeholder-image.jpg"; // Replace with your placeholder image path
                   }}
                 />
               </div>
@@ -197,42 +193,32 @@ const ProductDetailPage = ({ params }) => {
               <span>{product.stock} items available</span>
             </div>
             <div>
-              <span className="font-semibold">SKU: </span>
-              {product.sku}
-            </div>
-            <div>
-              <span className="font-semibold">Tags: </span>
-              {product.tags.join(", ")}
+              <span className="font-semibold">Rating: </span>
+              <span>{product.rating}/5</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="space-y-4 mt-8">
-        <h2 className="text-xl font-bold">Customer Reviews</h2>
-        <p className="text-lg text-yellow-500">Rating: {product.rating}/5</p>
-        {product.reviews && product.reviews.length > 0 ? (
-          <ul className="space-y-6">
+      <div>
+        <h2 className="text-xl font-bold">Reviews</h2>
+        {product.reviews.length > 0 ? (
+          <ul className="mt-4 space-y-4">
             {product.reviews.map((review, index) => (
-              <li
-                key={index}
-                className="border-b border-gray-200 pb-6 dark:border-gray-700"
-              >
-                <p className="font-semibold text-lg">{review.reviewerName}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+              <li key={index} className="border border-gray-300 p-4 rounded-lg">
+                <div className="flex justify-between">
+                  <span className="font-semibold">{review.reviewerName}</span>
+                  <span className="text-yellow-500">{review.rating}/5</span>
+                </div>
+                <p>{review.comment}</p>
+                <span className="text-gray-400 text-sm">
                   {new Date(review.date).toLocaleDateString()}
-                </p>
-                <p className="mt-2 text-gray-800 dark:text-gray-300">
-                  {review.comment}
-                </p>
-                <p className="text-yellow-400 mt-1">
-                  Rating: {review.rating}/5
-                </p>
+                </span>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-red-600 dark:text-gray-400">No reviews yet.</p>
+          <p className="mt-2 text-gray-500">No reviews yet.</p>
         )}
       </div>
 
@@ -247,7 +233,7 @@ const ProductDetailPage = ({ params }) => {
                 value={reviewComment}
                 onChange={(e) => setReviewComment(e.target.value)}
                 required
-                className="w-full border text-black border-gray-300 rounded-lg p-2"
+                className="w-full border border-gray-300 rounded-lg p-2"
               ></textarea>
             </div>
 
@@ -257,7 +243,7 @@ const ProductDetailPage = ({ params }) => {
                 value={reviewRating}
                 onChange={(e) => setReviewRating(Number(e.target.value))}
                 required
-                className="w-full border text-black border-gray-300 rounded-lg p-2"
+                className="w-full border border-gray-300 rounded-lg p-2"
               >
                 <option value="">Select a rating</option>
                 {[1, 2, 3, 4, 5].map((rating) => (
