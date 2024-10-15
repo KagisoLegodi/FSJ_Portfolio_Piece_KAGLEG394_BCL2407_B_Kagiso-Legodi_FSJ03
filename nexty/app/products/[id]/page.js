@@ -45,7 +45,10 @@ const ProductDetailPage = ({ params }) => {
     const fetchProduct = async () => {
       try {
         const productData = await getProduct(productId); // Fetch product data from Firestore
-        setProduct(productData);
+        setProduct({
+          ...productData,
+          reviews: productData.reviews || [], // Ensure reviews is initialized as an empty array if not present
+        });
         setMainImage(productData.thumbnail); // Set the main image to the product's thumbnail
         setLoading(false);
       } catch (err) {
@@ -73,11 +76,20 @@ const ProductDetailPage = ({ params }) => {
     };
 
     try {
-      await addReview(productId, reviewData); // Add the review to Firestore
-      setProduct((prev) => ({
-        ...prev,
-        reviews: [...prev.reviews, reviewData],
-      })); // Update the local state to reflect the new review
+      // Add the new review to Firestore
+      await addReview(productId, reviewData);
+
+      // Update product state with the new review
+      setProduct((prev) => {
+        const existingReviews = Array.isArray(prev?.reviews)
+          ? prev.reviews
+          : [];
+        return {
+          ...prev,
+          reviews: [...existingReviews, reviewData], // Add the new review to the existing reviews
+        };
+      });
+
       setReviewComment(""); // Clear the comment input
       setReviewRating(0); // Reset the rating
     } catch (error) {
@@ -220,33 +232,34 @@ const ProductDetailPage = ({ params }) => {
             ))}
           </ul>
         ) : (
-          <p className="text-gray-600 dark:text-gray-400">No reviews yet.</p>
+          <p className="text-red-600 dark:text-gray-400">No reviews yet.</p>
         )}
       </div>
 
-      {currentUser && (
+      {currentUser ? (
         <div className="mt-8">
           <h2 className="text-xl font-bold">Leave a Review</h2>
           <form onSubmit={handleReviewSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium">Comment</label>
               <textarea
-                className="mt-1 block w-full border text-black border-gray-300 rounded-md p-2"
-                rows="3"
+                rows="4"
                 value={reviewComment}
                 onChange={(e) => setReviewComment(e.target.value)}
                 required
-              />
+                className="w-full border text-black border-gray-300 rounded-lg p-2"
+              ></textarea>
             </div>
+
             <div>
               <label className="block text-sm font-medium">Rating</label>
               <select
-                className="mt-1 text-black block w-full border border-gray-300 rounded-md p-2"
                 value={reviewRating}
                 onChange={(e) => setReviewRating(Number(e.target.value))}
                 required
+                className="w-full border text-black border-gray-300 rounded-lg p-2"
               >
-                <option value={0}>Select a rating</option>
+                <option value="">Select a rating</option>
                 {[1, 2, 3, 4, 5].map((rating) => (
                   <option key={rating} value={rating}>
                     {rating}
@@ -254,14 +267,19 @@ const ProductDetailPage = ({ params }) => {
                 ))}
               </select>
             </div>
+
             <button
               type="submit"
-              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg"
             >
               Submit Review
             </button>
           </form>
         </div>
+      ) : (
+        <p className="mt-4 text-red-600">
+          You must be signed in to leave a review.
+        </p>
       )}
     </div>
   );
