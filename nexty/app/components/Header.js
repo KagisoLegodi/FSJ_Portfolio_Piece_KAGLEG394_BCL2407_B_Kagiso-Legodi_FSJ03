@@ -14,6 +14,7 @@ export default function Header() {
   useEffect(() => {
     const loadUser = async () => {
       const currentUser = await getCurrentUser();
+      console.log("Loaded User in Header:", currentUser); // Debugging log
       setUser(currentUser);
     };
     loadUser();
@@ -37,9 +38,11 @@ export default function Header() {
 
         <div className="flex items-center space-x-4">
           {user ? (
-            // Display user's email and a logout button if logged in
             <>
-              <span className="text-gray-700">Welcome, {user.email}</span>
+              <span className="text-gray-700">
+                Welcome, {user.displayName || "User"}
+              </span>{" "}
+              {/* Fallback to 'User' if displayName is not set */}
               <button
                 onClick={handleLogout}
                 className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
@@ -48,7 +51,6 @@ export default function Header() {
               </button>
             </>
           ) : (
-            // Show login and sign-up links if the user is not logged in
             <>
               <Link
                 href="/login"

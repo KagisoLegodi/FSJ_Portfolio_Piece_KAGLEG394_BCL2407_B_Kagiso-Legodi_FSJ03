@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
 import { auth } from "./firebase"; // Ensure correct path to your Firebase config
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  updateProfile, // Import updateProfile to update user info
 } from "firebase/auth";
 
 // Sign-in function
@@ -23,13 +23,17 @@ export const signIn = async (email, password) => {
 };
 
 // Sign-up function
-export const signUp = async (email, password) => {
+export const signUp = async (email, password, displayName) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
+
+    // Update the user profile with the display name
+    await updateProfile(userCredential.user, { displayName });
+
     return userCredential.user;
   } catch (error) {
     console.error("Error signing up:", error);
@@ -54,26 +58,13 @@ export const getCurrentUser = () => {
     const unsubscribe = onAuthStateChanged(
       auth,
       (user) => {
+        if (user) {
+          console.log("User fetched:", user); // Log the user object for debugging
+        }
         unsubscribe();
         resolve(user);
       },
       reject
     );
   });
-};
-
-// Custom hook for authentication state
-export const useAuth = () => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      setLoading(false);
-    });
-    return unsubscribe; // Cleanup the subscription when the component unmounts
-  }, []);
-
-  return { currentUser, loading };
 };

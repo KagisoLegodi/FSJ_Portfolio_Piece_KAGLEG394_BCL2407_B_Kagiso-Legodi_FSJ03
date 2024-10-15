@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // Use Next.js App Router
-import { signIn, getCurrentUser } from "../lib/firebaseAuth"; // Updated import
+import { useRouter } from "next/navigation";
+import { signIn, getCurrentUser } from "../lib/firebaseAuth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,6 +17,7 @@ const Login = () => {
   useEffect(() => {
     const loadUser = async () => {
       const currentUser = await getCurrentUser();
+      console.log("Loaded User in Login:", currentUser); // Debugging log
       setUser(currentUser);
     };
     loadUser();

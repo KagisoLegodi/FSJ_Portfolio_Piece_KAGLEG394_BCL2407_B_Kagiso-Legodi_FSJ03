@@ -31,7 +31,7 @@ const SignUpPage = () => {
 
     try {
       await signUp(email, password, displayName);
-      router.push("/");
+      router.push("/"); // Redirect to home page after successful sign-up
     } catch (error) {
       setErrorMessage(error.message || "Sign up failed. Please try again.");
     } finally {
@@ -80,7 +80,7 @@ const SignUpPage = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               required
-              className="mt-1 block w-full px-3  text-black py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
+              className="mt-1 block w-full px-3 py-2 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
             />
           </div>
 
@@ -125,7 +125,7 @@ const SignUpPage = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm your password"
               required
-              className="mt-1 block w-full px-3 py-2  text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
+              className="mt-1 block w-full px-3 py-2 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
             />
           </div>
 
