@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link"; // Import Link component
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { useAuth } from "../../lib/firebaseAuth";
@@ -49,8 +50,19 @@ const ProductDetailPage = ({ params }) => {
 
   return (
     <div className="max-w-4xl mx-auto p-8">
+      {/* Back to Products */}
+      <Link
+        href="/"
+        className="text-blue-600 hover:text-blue-800 underline mb-4"
+      >
+        &larr; Back to Home
+      </Link>
+
       {loading ? (
-        <p className="text-center">Loading...</p>
+        <div className="flex flex-col items-center justify-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-600 border-gray-300 mb-2"></div>
+          <p className="text-center">Grabbing details...</p>
+        </div>
       ) : error ? (
         <p className="text-red-500 text-center">{error}</p>
       ) : (
