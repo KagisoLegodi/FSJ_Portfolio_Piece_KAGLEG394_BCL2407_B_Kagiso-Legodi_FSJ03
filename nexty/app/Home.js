@@ -1,18 +1,15 @@
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProductList from "./components/ProductList";
 import SearchBar from "./components/searchBar";
 import SortOptions from "./components/SortOptions";
 import CategoryFilter from "./components/CategoryFilter";
 import { fetchProducts } from "./lib/fetchProducts";
-import { fetchCategories } from "./lib/fetchCategories"; // Correct import path
+import { fetchCategories } from "./lib/fetchCategories";
 import Header from "./components/Header";
 
-/**
- * Component to handle search params using useSearchParams.
- */
 function ProductFilter({ setSearchData }) {
   const searchParams = useSearchParams();
 
@@ -22,7 +19,6 @@ function ProductFilter({ setSearchData }) {
   const page = parseInt(searchParams.get("page") || "1", 10);
 
   useEffect(() => {
-    // Update search data whenever search params change
     setSearchData({ search, sort, category, page });
   }, [search, sort, category, page, setSearchData]);
 
@@ -32,20 +28,18 @@ function ProductFilter({ setSearchData }) {
 export default function Home() {
   const router = useRouter();
 
-  // State for storing product data, categories, and loading status
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [totalProducts, setTotalProducts] = useState(0);
 
-  // State for search params data
   const [searchData, setSearchData] = useState({
     search: "",
     sort: "",
-    categories: "",
+    category: "",
     page: 1,
   });
 
-  // Load categories on component mount
   useEffect(() => {
     const loadCategories = async () => {
       try {
@@ -59,51 +53,78 @@ export default function Home() {
     loadCategories();
   }, []);
 
-  // Load products based on search params
-  useEffect(() => {
-    const loadProducts = async () => {
-      const { search, sort, category, page } = searchData;
-      setLoading(true);
-      try {
-        const fetchedProducts = await fetchProducts(
-          page,
-          search,
-          sort,
-          category
-        );
-        console.log("Fetched Products:", fetchedProducts);
-        setProducts(fetchedProducts.products);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProducts();
+  const loadProducts = useCallback(async () => {
+    const { search, sort, category, page } = searchData;
+    setLoading(true);
+    try {
+      const fetchedData = await fetchProducts(page, search, sort, category);
+      setProducts(fetchedData.products);
+      setTotalProducts(fetchedData.total);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
   }, [searchData]);
 
-  /**
-   * Handles pagination to load products for a new page.
-   *
-   * @param {number} newPage - The page number to navigate to.
-   */
-  const handlePagination = (newPage) => {
-    if (!loading) {
-      const params = new URLSearchParams(window.location.search);
-      params.set("page", newPage.toString());
-      const newUrl = `${window.location.pathname}?${params.toString()}`;
-      router.push(newUrl);
-      setSearchData((prevData) => ({ ...prevData, page: newPage }));
-    }
-  };
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
 
-  /**
-   * Resets all filters, search, and sort options.
-   */
-  const handleReset = () => {
-    router.push("/"); // Reset URL to default without filters
-  };
+  const updateSearchParams = useCallback(
+    (newParams) => {
+      const params = new URLSearchParams(window.location.search);
+      Object.entries(newParams).forEach(([key, value]) => {
+        if (value) {
+          params.set(key, value);
+        } else {
+          params.delete(key);
+        }
+      });
+      router.push(`/?${params.toString()}`);
+    },
+    [router]
+  );
+
+  const handleSearch = useCallback(
+    (searchTerm) => {
+      updateSearchParams({ search: searchTerm, page: "1" });
+    },
+    [updateSearchParams]
+  );
+
+  const handleSort = useCallback(
+    (sortOption) => {
+      updateSearchParams({ sort: sortOption, page: "1" });
+    },
+    [updateSearchParams]
+  );
+
+  const handleCategoryChange = useCallback(
+    (category) => {
+      updateSearchParams({ category, page: "1" });
+    },
+    [updateSearchParams]
+  );
+
+  const handlePagination = useCallback(
+    (newPage) => {
+      updateSearchParams({ page: newPage.toString() });
+    },
+    [updateSearchParams]
+  );
+
+  const handleReset = useCallback(() => {
+    router.push("/");
+    setSearchData({
+      search: "",
+      sort: "",
+      category: "",
+      page: 1,
+    });
+  }, [router]);
+
+  const totalPages = Math.ceil(totalProducts / 20);
 
   return (
     <>
@@ -124,16 +145,23 @@ export default function Home() {
         <div className="mb-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
             <div className="w-full md:w-1/3">
-              <SearchBar initialSearchTerm={searchData.search} />
+              <SearchBar
+                initialSearchTerm={searchData.search}
+                onSearch={handleSearch}
+              />
             </div>
             <div className="w-full md:w-1/3">
               <CategoryFilter
                 categories={categories}
                 selectedCategory={searchData.category}
+                onCategoryChange={handleCategoryChange}
               />
             </div>
             <div className="w-full md:w-1/3">
-              <SortOptions selectedSort={searchData.sort} />
+              <SortOptions
+                selectedSort={searchData.sort}
+                onSortChange={handleSort}
+              />
             </div>
           </div>
         </div>
@@ -172,14 +200,14 @@ export default function Home() {
             {loading && searchData.page > 1 ? "Loading..." : "Previous"}
           </button>
           <span className="font-semibold text-gray-700">
-            Page {searchData.page}
+            Page {searchData.page} of {totalPages}
           </span>
           <button
             onClick={() => handlePagination(searchData.page + 1)}
-            disabled={products.length < 20 || loading}
+            disabled={searchData.page >= totalPages || loading}
             className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading && products.length === 20 ? "Loading..." : "Next"}
+            {loading && searchData.page < totalPages ? "Loading..." : "Next"}
           </button>
         </div>
       </section>

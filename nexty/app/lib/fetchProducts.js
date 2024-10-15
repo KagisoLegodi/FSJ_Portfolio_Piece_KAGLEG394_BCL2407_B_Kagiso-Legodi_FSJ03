@@ -1,12 +1,12 @@
 export async function fetchProducts(
-  lastDocId = "",
+  page = 1,
   search = "",
   sort = "",
   category = ""
 ) {
   const pageSize = 20; // You can adjust this value as needed
   const queryParams = new URLSearchParams({
-    lastDocId,
+    page: page.toString(),
     pageSize: pageSize.toString(),
     search,
     sort,
@@ -22,8 +22,8 @@ export async function fetchProducts(
     const data = await response.json();
     console.log("Fetched products data:", data);
     return data;
-  // } catch (error) {
-  //   console.error("Error fetching products:", error);
-  //   throw error;
-  // }
-}
+  }  //catch (error) {
+//     console.error("Error fetching products:", error);
+//     throw error;
+//   }
+// }

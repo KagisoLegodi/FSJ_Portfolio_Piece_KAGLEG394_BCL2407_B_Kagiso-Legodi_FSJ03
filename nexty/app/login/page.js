@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // Use Next.js App Router
-import { signIn, getCurrentUser } from "../lib/firebaseAuth"; // Updated import
+import { useRouter } from "next/navigation";
+import { signIn, getCurrentUser } from "../lib/firebaseAuth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,6 +17,7 @@ const Login = () => {
   useEffect(() => {
     const loadUser = async () => {
       const currentUser = await getCurrentUser();
+      console.log("Loaded User in Login:", currentUser); // Debugging log
       setUser(currentUser);
     };
     loadUser();
@@ -72,7 +73,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               required
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block text-black w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
@@ -91,7 +92,7 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 required
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
               <button
                 type="button"

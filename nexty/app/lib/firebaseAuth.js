@@ -1,19 +1,14 @@
-// app/lib/firebaseAuth.js
-
-import { auth } from "./firebase"; // Adjust the path as necessary
+import { useState, useEffect } from "react";
+import { auth } from "./firebase"; // Ensure correct path to your Firebase config
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  updateProfile,
 } from "firebase/auth";
 
-/**
- * Sign in a user using Firebase Authentication.
- * @param {string} email - The email of the user.
- * @param {string} password - The password of the user.
- * @returns {Promise} - A promise that resolves with the user credentials.
- */
+// Sign-in function
 export const signIn = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(
@@ -28,47 +23,23 @@ export const signIn = async (email, password) => {
   }
 };
 
-/**
- * Sign up a new user using Firebase Authentication.
- * @param {string} email - The email of the new user.
- * @param {string} password - The password for the new user.
- * @returns {Promise} - A promise that resolves with the user credentials.
- */
-export const signUp = async (email, password) => {
+// Sign-up function
+export const signUp = async (email, password, displayName) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
-    return userCredential.user; // Return the user object or any relevant information
+    await updateProfile(userCredential.user, { displayName });
+    return userCredential.user;
   } catch (error) {
     console.error("Error signing up:", error);
-    throw error; // Throw error to handle in the component
+    throw error;
   }
 };
 
-/**
- * Get the currently authenticated user.
- * @returns {Promise<null|Object>} - A promise that resolves with the authenticated user or null if not authenticated.
- */
-export const getCurrentUser = () => {
-  return new Promise((resolve, reject) => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      (user) => {
-        unsubscribe(); // Unsubscribe after the first call to prevent memory leaks
-        resolve(user);
-      },
-      reject
-    );
-  });
-};
-
-/**
- * Sign out the current user.
- * @returns {Promise<void>}
- */
+// Sign-out function
 export const logOut = async () => {
   try {
     await signOut(auth);
@@ -77,4 +48,37 @@ export const logOut = async () => {
     console.error("Error logging out:", error);
     throw error;
   }
+};
+
+// Get the current authenticated user
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (user) => {
+        if (user) {
+          console.log("User fetched:", user);
+        }
+        unsubscribe();
+        resolve(user);
+      },
+      reject
+    );
+  });
+};
+
+// Custom hook for authentication state
+export const useAuth = () => {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      setLoading(false);
+    });
+    return unsubscribe; // Cleanup the subscription when the component unmounts
+  }, []);
+
+  return { currentUser, loading };
 };
