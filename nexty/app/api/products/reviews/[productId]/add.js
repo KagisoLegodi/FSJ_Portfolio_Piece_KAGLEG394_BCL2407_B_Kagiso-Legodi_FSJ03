@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { db, serverTimestamp } from "../../../lib/firebaseAdmin";
-import { verifyToken } from "../../../lib/helpers";
+import { db, serverTimestamp } from "../../../../../lib/firebaseAdmin";
+import { verifyToken, validateRating } from "../../../../../lib/helpers";
 
 export async function POST(request, { params }) {
   const { productId } = params;
@@ -10,11 +10,16 @@ export async function POST(request, { params }) {
     const decodedToken = await verifyToken(request);
 
     if (!rating || !comment) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
     }
 
+    const validatedRating = validateRating(rating);
+
     const review = {
-      rating,
+      rating: validatedRating,
       comment,
       date: serverTimestamp(),
       reviewerEmail: decodedToken.email,
@@ -33,6 +38,9 @@ export async function POST(request, { params }) {
     );
   } catch (error) {
     console.error("Error adding review:", error);
-    return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || "Internal server error" },
+      { status: 500 }
+    );
   }
 }

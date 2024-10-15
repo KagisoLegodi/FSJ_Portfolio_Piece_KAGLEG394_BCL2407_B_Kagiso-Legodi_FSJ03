@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { db, serverTimestamp } from "../../../lib/firebaseAdmin";
-import { verifyToken } from "../../../lib/helpers";
+import { db, serverTimestamp } from "../../../../../lib/firebaseAdmin";
+import { verifyToken, validateRating } from "../../../../../lib/helpers";
 
 export async function PUT(request, { params }) {
   const { productId } = params;
@@ -10,8 +10,13 @@ export async function PUT(request, { params }) {
     const decodedToken = await verifyToken(request);
 
     if (!rating || !comment || !reviewId) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
     }
+
+    const validatedRating = validateRating(rating);
 
     const reviewDoc = await db
       .collection("products")
@@ -34,14 +39,20 @@ export async function PUT(request, { params }) {
       .collection("reviews")
       .doc(reviewId)
       .update({
-        rating,
+        rating: validatedRating,
         comment,
         date: serverTimestamp(),
       });
 
-    return NextResponse.json({ message: "Review updated successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Review updated successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error editing review:", error);
-    return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || "Internal server error" },
+      { status: 500 }
+    );
   }
 }

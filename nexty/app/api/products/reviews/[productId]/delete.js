@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { db } from "../../../lib/firebaseAdmin";
-import { verifyToken } from "../../../lib/helpers";
+import { db } from "../../../../../lib/firebaseAdmin";
+import { verifyToken } from "../../../../../lib/helpers";
 
 export async function DELETE(request, { params }) {
   const { productId } = params;
@@ -10,7 +10,10 @@ export async function DELETE(request, { params }) {
     const decodedToken = await verifyToken(request);
 
     if (!reviewId) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
     }
 
     const reviewDoc = await db
@@ -35,9 +38,15 @@ export async function DELETE(request, { params }) {
       .doc(reviewId)
       .delete();
 
-    return NextResponse.json({ message: "Review deleted successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Review deleted successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error deleting review:", error);
-    return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || "Internal server error" },
+      { status: 500 }
+    );
   }
 }

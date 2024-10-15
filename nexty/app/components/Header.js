@@ -40,7 +40,7 @@ export default function Header() {
           {user ? (
             <>
               <span className="text-gray-700">
-                Welcome, {user.displayName || "User"}
+                Welcome, {user.email || "User"}
               </span>{" "}
               {/* Fallback to 'User' if displayName is not set */}
               <button
