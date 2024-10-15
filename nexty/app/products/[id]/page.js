@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../lib/firebase"; // Ensure this path points to where your Firebase config is
+import { useAuth } from "../../lib/firebaseAuth"; // Import useAuth hook
 
 // Function to get product data from Firestore by product ID
 async function getProduct(productId) {
@@ -18,13 +19,27 @@ async function getProduct(productId) {
   return productSnap.data(); // Return product data
 }
 
+// Function to add a review to the product
+async function addReview(productId, reviewData) {
+  const productRef = doc(db, "products", productId);
+  await setDoc(
+    productRef,
+    {
+      reviews: reviewData, // Update the reviews field in Firestore
+    },
+    { merge: true }
+  ); // Use merge to avoid overwriting existing data
+}
+
 const ProductDetailPage = ({ params }) => {
   const { id: productId } = params;
-
+  const { currentUser, loading: authLoading } = useAuth(); // Get auth state
   const [product, setProduct] = useState(null);
   const [mainImage, setMainImage] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewRating, setReviewRating] = useState(0);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -43,7 +58,35 @@ const ProductDetailPage = ({ params }) => {
     window.scrollTo(0, 0); // Scroll to the top of the page when product data is loaded
   }, [productId]);
 
-  if (loading) {
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (!reviewComment || reviewRating <= 0) {
+      alert("Please enter a comment and a rating.");
+      return;
+    }
+
+    const reviewData = {
+      reviewerName: currentUser.displayName || currentUser.email,
+      comment: reviewComment,
+      rating: reviewRating,
+      date: new Date().toISOString(),
+    };
+
+    try {
+      await addReview(productId, reviewData); // Add the review to Firestore
+      setProduct((prev) => ({
+        ...prev,
+        reviews: [...prev.reviews, reviewData],
+      })); // Update the local state to reflect the new review
+      setReviewComment(""); // Clear the comment input
+      setReviewRating(0); // Reset the rating
+    } catch (error) {
+      console.error("Error adding review:", error);
+      alert("Failed to add review.");
+    }
+  };
+
+  if (loading || authLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <svg
@@ -180,6 +223,46 @@ const ProductDetailPage = ({ params }) => {
           <p className="text-gray-600 dark:text-gray-400">No reviews yet.</p>
         )}
       </div>
+
+      {currentUser && (
+        <div className="mt-8">
+          <h2 className="text-xl font-bold">Leave a Review</h2>
+          <form onSubmit={handleReviewSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium">Comment</label>
+              <textarea
+                className="mt-1 block w-full border text-black border-gray-300 rounded-md p-2"
+                rows="3"
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Rating</label>
+              <select
+                className="mt-1 text-black block w-full border border-gray-300 rounded-md p-2"
+                value={reviewRating}
+                onChange={(e) => setReviewRating(Number(e.target.value))}
+                required
+              >
+                <option value={0}>Select a rating</option>
+                {[1, 2, 3, 4, 5].map((rating) => (
+                  <option key={rating} value={rating}>
+                    {rating}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              type="submit"
+              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            >
+              Submit Review
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 };
