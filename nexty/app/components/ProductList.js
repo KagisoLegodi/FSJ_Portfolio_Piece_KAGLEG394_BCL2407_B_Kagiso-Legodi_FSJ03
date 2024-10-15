@@ -18,7 +18,7 @@ export default function ProductList({ product }) {
     <div>
       <Suspense key={product.id} fallback={<div>Loading product...</div>}>
         <Link
-          href={`api/products/${product.id}?${searchParams.toString()}`}
+          href={`/products/${product.id}?${searchParams.toString()}`}
           className="block p-4 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow"
         >
           <div className="relative bg-slate-300">

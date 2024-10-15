@@ -67,7 +67,7 @@ export default function ProductCard({ product }) {
         )}
       </div>
       <div className="px-5 pb-5">
-        <Link href={`/api/products/${product.id}`}>
+        <Link href={`/products/${product.id}`}>
           <h5 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white truncate">
             {product.title}
           </h5>
