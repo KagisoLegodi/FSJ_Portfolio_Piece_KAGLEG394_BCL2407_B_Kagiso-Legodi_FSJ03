@@ -233,7 +233,7 @@ const ProductDetailPage = ({ params }) => {
                 value={reviewComment}
                 onChange={(e) => setReviewComment(e.target.value)}
                 required
-                className="w-full border border-gray-300 rounded-lg p-2"
+                className="w-full border text-black border-gray-300 rounded-lg p-2"
               ></textarea>
             </div>
 
@@ -243,7 +243,7 @@ const ProductDetailPage = ({ params }) => {
                 value={reviewRating}
                 onChange={(e) => setReviewRating(Number(e.target.value))}
                 required
-                className="w-full border border-gray-300 rounded-lg p-2"
+                className="w-full border text-black border-gray-300 rounded-lg p-2"
               >
                 <option value="">Select a rating</option>
                 {[1, 2, 3, 4, 5].map((rating) => (
