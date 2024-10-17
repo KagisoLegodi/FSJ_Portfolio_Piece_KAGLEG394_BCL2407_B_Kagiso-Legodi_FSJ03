@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { arrayUnion, arrayRemove, doc, updateDoc } from "firebase/firestore";
 import { useAuth } from "../lib/firebaseAuth"; // Adjust path as needed
 import { db } from "../lib/firebase"; // Adjust Firebase import path
@@ -38,6 +38,16 @@ const ReviewSection = ({ productId, reviews = [] }) => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null); // For delete confirmation
 
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 2000); // Clear the success message after 5 seconds
+
+      return () => clearTimeout(timer); // Clean up the timer if the component unmounts or successMessage changes
+    }
+  }, [successMessage]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!newReview.comment || newReview.rating <= 0) {
@@ -70,7 +80,7 @@ const ReviewSection = ({ productId, reviews = [] }) => {
         }
       });
 
-      setNewReview({ rating: 5, comment: "" });
+      setNewReview({ rating: 0, comment: "" });
       setEditingReview(null);
       setSuccessMessage("Review submitted successfully!");
     } catch (error) {
